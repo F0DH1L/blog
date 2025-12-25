@@ -16,7 +16,7 @@ I solved this challenge during BSides Algiers 2025, and I was the only player to
 
 # **On a side note, my team took first place in the CTF**
 
-![scoreboard](/blog/images/bsides_algiers_2k25_web_library_of_vaults/image.png)
+![scoreboard](/blog/images/bsides_algiers_2k25_web_library_of_vaults/image-4.png)
 
 ---
 
