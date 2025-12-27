@@ -4,18 +4,34 @@
         <link>http://localhost:1313/blog/tags/</link>
         <description>Tags - Tag - My Personal Blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>benhibafodhil@gmail.com (F0DH1L)</managingEditor>
-            <webMaster>benhibafodhil@gmail.com (F0DH1L)</webMaster><copyright>2025 F0DH1L</copyright><lastBuildDate>Sun, 21 Dec 2025 14:35:26 &#43;0100</lastBuildDate><atom:link href="http://localhost:1313/blog/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>benhibafodhil@gmail.com (F0DH1L)</webMaster><copyright>2025 F0DH1L</copyright><lastBuildDate>Sat, 27 Dec 2025 18:57:17 &#43;0100</lastBuildDate><atom:link href="http://localhost:1313/blog/tags/" rel="self" type="application/rss+xml" /><item>
     <title>Ctf</title>
     <link>http://localhost:1313/blog/tags/ctf/</link>
-    <pubDate>Sun, 21 Dec 2025 14:35:26 &#43;0100</pubDate>
+    <pubDate>Sat, 27 Dec 2025 18:57:17 &#43;0100</pubDate>
     <author>benhibafodhil@gmail.com (F0DH1L)</author>
     <guid>http://localhost:1313/blog/tags/ctf/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
+    <title>Cybears_ctf</title>
+    <link>http://localhost:1313/blog/tags/cybears_ctf/</link>
+    <pubDate>Sat, 27 Dec 2025 18:57:17 &#43;0100</pubDate>
+    <author>benhibafodhil@gmail.com (F0DH1L)</author>
+    <guid>http://localhost:1313/blog/tags/cybears_ctf/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>My_challenges</title>
+    <link>http://localhost:1313/blog/tags/my_challenges/</link>
+    <pubDate>Sat, 27 Dec 2025 18:57:17 &#43;0100</pubDate>
+    <author>benhibafodhil@gmail.com (F0DH1L)</author>
+    <guid>http://localhost:1313/blog/tags/my_challenges/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>Web Security</title>
     <link>http://localhost:1313/blog/tags/web-security/</link>
-    <pubDate>Sun, 21 Dec 2025 14:35:26 &#43;0100</pubDate>
+    <pubDate>Sat, 27 Dec 2025 18:57:17 &#43;0100</pubDate>
     <author>benhibafodhil@gmail.com (F0DH1L)</author>
     <guid>http://localhost:1313/blog/tags/web-security/</guid>
     <description><![CDATA[]]></description>
@@ -66,14 +82,6 @@
     <pubDate>Thu, 24 Jul 2025 10:11:07 &#43;0100</pubDate>
     <author>benhibafodhil@gmail.com (F0DH1L)</author>
     <guid>http://localhost:1313/blog/tags/hackerone/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Xss</title>
-    <link>http://localhost:1313/blog/tags/xss/</link>
-    <pubDate>Thu, 24 Jul 2025 10:11:07 &#43;0100</pubDate>
-    <author>benhibafodhil@gmail.com (F0DH1L)</author>
-    <guid>http://localhost:1313/blog/tags/xss/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

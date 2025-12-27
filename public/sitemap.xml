@@ -2,12 +2,17 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
+            <loc>http://localhost:1313/blog/tags/ctf/</loc><lastmod>2025-12-27T18:57:17&#43;01:00</lastmod></url><url>
+            <loc>http://localhost:1313/blog/posts/cybears_ctf_web_file_manager/</loc><lastmod>2025-12-27T18:57:17&#43;01:00</lastmod></url><url>
+            <loc>http://localhost:1313/blog/tags/cybears_ctf/</loc><lastmod>2025-12-27T18:57:17&#43;01:00</lastmod></url><url>
+            <loc>http://localhost:1313/blog/</loc><lastmod>2025-12-27T18:57:17&#43;01:00</lastmod></url><url>
+            <loc>http://localhost:1313/blog/tags/my_challenges/</loc><lastmod>2025-12-27T18:57:17&#43;01:00</lastmod></url><url>
+            <loc>http://localhost:1313/blog/posts/</loc><lastmod>2025-12-27T18:57:17&#43;01:00</lastmod></url><url>
+            <loc>http://localhost:1313/blog/tags/</loc><lastmod>2025-12-27T18:57:17&#43;01:00</lastmod></url><url>
+            <loc>http://localhost:1313/blog/tags/web-security/</loc><lastmod>2025-12-27T18:57:17&#43;01:00</lastmod></url><url>
+            <loc>http://localhost:1313/blog/posts/cybears_ctf_web_ozymandias/</loc><lastmod>2025-12-27T18:57:06&#43;01:00</lastmod></url><url>
+            <loc>http://localhost:1313/blog/posts/cybears_ctf_web_gear5/</loc><lastmod>2025-12-27T18:56:58&#43;01:00</lastmod></url><url>
             <loc>http://localhost:1313/blog/posts/bsides_algiers_2k25_web_library_of_vaults/</loc><lastmod>2025-12-21T14:35:26&#43;01:00</lastmod></url><url>
-            <loc>http://localhost:1313/blog/tags/ctf/</loc><lastmod>2025-12-21T14:35:26&#43;01:00</lastmod></url><url>
-            <loc>http://localhost:1313/blog/</loc><lastmod>2025-12-21T14:35:26&#43;01:00</lastmod></url><url>
-            <loc>http://localhost:1313/blog/posts/</loc><lastmod>2025-12-21T14:35:26&#43;01:00</lastmod></url><url>
-            <loc>http://localhost:1313/blog/tags/</loc><lastmod>2025-12-21T14:35:26&#43;01:00</lastmod></url><url>
-            <loc>http://localhost:1313/blog/tags/web-security/</loc><lastmod>2025-12-21T14:35:26&#43;01:00</lastmod></url><url>
             <loc>http://localhost:1313/blog/tags/active-directory/</loc><lastmod>2025-10-23T14:01:34&#43;01:00</lastmod></url><url>
             <loc>http://localhost:1313/blog/tags/htb/</loc><lastmod>2025-10-23T14:01:34&#43;01:00</lastmod></url><url>
             <loc>http://localhost:1313/blog/posts/htb_tombwatcher/</loc><lastmod>2025-10-23T14:01:34&#43;01:00</lastmod></url><url>

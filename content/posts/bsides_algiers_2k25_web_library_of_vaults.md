@@ -1,7 +1,7 @@
 +++
 date = '2025-12-21T14:35:26+01:00'
 draft = false
-title = 'Bsides_algiers_2k25_web_library_of_vaults'
+title = 'Bsides algiers 2k25 web/Library Vaults'
 tags = ["ctf", "web security", "ctf"]
 +++
 

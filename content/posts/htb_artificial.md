@@ -239,7 +239,7 @@ Extracting the archive revealed the coveted root flag:
 
 ![Root flag obtained](/blog/images/htb_artificial/image-17.png)
 
-🎉 **Machine pwned!**
+ **Machine pwned!**
 
 ---
 

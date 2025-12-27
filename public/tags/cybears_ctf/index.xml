@@ -1,0 +1,65 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Cybears_ctf - Tag - My Personal Blog</title>
+        <link>http://localhost:1313/blog/tags/cybears_ctf/</link>
+        <description>Cybears_ctf - Tag - My Personal Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>benhibafodhil@gmail.com (F0DH1L)</managingEditor>
+            <webMaster>benhibafodhil@gmail.com (F0DH1L)</webMaster><copyright>2025 F0DH1L</copyright><lastBuildDate>Sat, 27 Dec 2025 18:57:17 &#43;0100</lastBuildDate><atom:link href="http://localhost:1313/blog/tags/cybears_ctf/" rel="self" type="application/rss+xml" /><item>
+    <title>Cybears ctf web/file manager</title>
+    <link>http://localhost:1313/blog/posts/cybears_ctf_web_file_manager/</link>
+    <pubDate>Sat, 27 Dec 2025 18:57:17 &#43;0100</pubDate>
+    <author>benhibafodhil@gmail.com (F0DH1L)</author>
+    <guid>http://localhost:1313/blog/posts/cybears_ctf_web_file_manager/</guid>
+    <description><![CDATA[<h1 id="filemanager-ctf-challenge-writeup">FileManager CTF Challenge Writeup</h1>
+<p><strong>Challenge:</strong> FileManager<br>
+<strong>Event:</strong> Cybears CTF
+<strong>Category:</strong> Web
+<strong>Difficulty:</strong> Hard</p>
+<p>I created this challenge for Cybears CTF, a Capture The Flag competition focused on the Africa region. The event brought together many talented teams from across the continent, making it an exciting competition with high-quality participation.</p>
+<p>This was a web challenge that required chaining multiple vulnerabilities to steal the admin&rsquo;s flag cookie.</p>
+<hr>
+<h2 id="tldr">TL;DR</h2>
+<p>This challenge chains three vulnerabilities to steal the flag:</p>]]></description>
+</item>
+<item>
+    <title>Cybears ctf web/ozymandias</title>
+    <link>http://localhost:1313/blog/posts/cybears_ctf_web_ozymandias/</link>
+    <pubDate>Sat, 27 Dec 2025 18:57:06 &#43;0100</pubDate>
+    <author>benhibafodhil@gmail.com (F0DH1L)</author>
+    <guid>http://localhost:1313/blog/posts/cybears_ctf_web_ozymandias/</guid>
+    <description><![CDATA[<h1 id="ozymandias-ctf-challenge-writeup">Ozymandias CTF Challenge Writeup</h1>
+<p><strong>Challenge:</strong> Ozymandias<br>
+<strong>Event:</strong> Cybears CTF<br>
+<strong>Category:</strong> Web<br>
+<strong>Difficulty:</strong> Medium</p>
+<p>I created this challenge for Cybears CTF, a Capture The Flag competition focused on the Africa region. The event brought together many talented teams from across the continent, making it an exciting competition with high-quality participation.</p>
+<p>A Flask web application that requires exploiting a cache poisoning vulnerability combined with a race condition to obtain the premium flag without paying for it.</p>]]></description>
+</item>
+<item>
+    <title>Cybears ctf web/gear5</title>
+    <link>http://localhost:1313/blog/posts/cybears_ctf_web_gear5/</link>
+    <pubDate>Sat, 27 Dec 2025 18:56:58 &#43;0100</pubDate>
+    <author>benhibafodhil@gmail.com (F0DH1L)</author>
+    <guid>http://localhost:1313/blog/posts/cybears_ctf_web_gear5/</guid>
+    <description><![CDATA[<h1 id="gear5-ctf-challenge-writeup">Gear5 CTF Challenge Writeup</h1>
+<p><strong>Challenge:</strong> Gear5<br>
+<strong>Event:</strong> Cybears CTF<br>
+<strong>Category:</strong> Web
+<strong>Difficulty:</strong> Hard</p>
+<p>This was a challenge that I created, which required chaining multiple GraphQL vulnerabilities to exfiltrate sensitive data from a MongoDB-backed API. The exploit chain combines GraphQL introspection, IDOR, MongoDB ObjectID prediction, and rate limit bypass through alias abuse.</p>
+<hr>
+<h2 id="tldr">TL;DR</h2>
+<p>This challenge chains four vulnerabilities to retrieve the flag:</p>
+<ol>
+<li><strong>GraphQL Introspection</strong>, Discover hidden queries and schema structure</li>
+<li><strong>Information Disclosure</strong>, <code>allUsersTimestamps</code> leaks user creation timestamps</li>
+<li><strong>MongoDB ObjectID Prediction</strong>, Predictable ID structure allows ID generation</li>
+<li><strong>Rate Limit Bypass</strong>, GraphQL aliases batch multiple queries as a single request to bypass rate limiting on <code>userSensitive</code> query</li>
+</ol>
+<hr>
+<p>The descripton said you need gear5 to solve it
+lets get that
+</p>]]></description>
+</item>
+</channel>
+</rss>
