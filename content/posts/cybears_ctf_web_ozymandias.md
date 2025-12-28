@@ -198,6 +198,8 @@ RU-MOW: 503
 
 Perfect! `RU-MOW` (Russia - Moscow) returns a 503 Service Unavailable response. Now we have everything we need for the cache poisoning attack!
 
+**NOTE:** Some players felt this part was a bit guessy. Fair enough, everyone has different perspectives on what feels discoverable versus what feels like guesswork (so maybe it was guessy after all we will never know).
+
 **The Attack:**
 1. Send a request to `/static/js/locations.js?u=victim_username` with `X-Region: RU-MOW` (the blocked region we discovered)
 2. The static server caches the 503 error response for this URL
