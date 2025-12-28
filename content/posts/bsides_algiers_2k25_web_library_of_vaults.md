@@ -694,7 +694,8 @@ fetch('http://127.0.0.1:1337/panel',{
 
 After triggering the exploit and waiting a few seconds for the bot to do its thing, I fetched `/static/pwl.txt` and there it was, the flag!
 
-## **FLAG: shellmates{c4ch3d_x55_dr1nk5cr5f&_p01s0n3d_d0t3nv}**
+## **FLAG:**
+**```shellmates{c4ch3d_x55_dr1nk5cr5f&_p01s0n3d_d0t3nv}```**
 
 After all that and finally getting the flag, I felt only two things: a deep pride and a huge wave of relief!
 

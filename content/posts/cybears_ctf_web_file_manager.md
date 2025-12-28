@@ -11,7 +11,7 @@ tags = ["ctf", "web security", "cybears_ctf", "my_challenges"]
 **Event:** Cybears CTF  
 **Category:** Web   
 **Difficulty:** Hard        
-**Source Code:** https://github.com/F0DH1L/cybears_ctf_2k25/file_manager
+**Source Code:** https://github.com/F0DH1L/cybears_ctf_2k25/tree/main/file_manager
 
 I created this challenge for Cybears CTF, a Capture The Flag competition focused on the Africa region. The event brought together many talented teams from across the continent, making it an exciting competition with high-quality participation.
 
@@ -513,4 +513,4 @@ session.post(f'{BASE_URL}/api/report', data={'url': malicious_url})
 ```
 
 ### And by that u get the flag 
-**Cybears{CSPT_AND_XSS_LIKE_A_PRO!!!}**
+**```Cybears{CSPT_AND_XSS_LIKE_A_PRO!!!}```**

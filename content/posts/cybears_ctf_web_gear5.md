@@ -11,7 +11,7 @@ tags = ["ctf", "web security", "cybears_ctf", "my_challenges"]
 **Event:** Cybears CTF  
 **Category:** Web   
 **Difficulty:** Hard  
-**Source Code:** https://github.com/F0DH1L/cybears_ctf_2k25/gear5
+**Source Code:** https://github.com/F0DH1L/cybears_ctf_2k25/tree/main/gear5
 
 This was a challenge that I created, which required chaining multiple GraphQL vulnerabilities to exfiltrate sensitive data from a MongoDB-backed API. The exploit chain combines GraphQL introspection, IDOR, MongoDB ObjectID prediction, and rate limit bypass through alias abuse.
 
@@ -392,7 +392,7 @@ for ts in target_timestamps:
 
 ## After running the exploit, the response came back with the flag!
 
-Cybears{now_you_are_a_hacker_with_gear_5_powers_no_one_can_stop_you}
+**```Cybears{now_you_are_a_hacker_with_gear_5_powers_no_one_can_stop_you}```**
 
 ## and by that you officially have gear5 powers
 

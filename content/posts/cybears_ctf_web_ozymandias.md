@@ -11,7 +11,7 @@ tags = ["ctf", "web security", "cybears_ctf", "my_challenges"]
 **Event:** Cybears CTF  
 **Category:** Web  
 **Difficulty:** Medium  
-**Source Code:** https://github.com/F0DH1L/cybears_ctf_2k25/ozymandias
+**Source Code:** https://github.com/F0DH1L/cybears_ctf_2k25/tree/main/ozymandias
 
 I created this challenge for Cybears CTF, a Capture The Flag competition focused on the Africa region. The event brought together many talented teams from across the continent, making it an exciting competition with high-quality participation.
 
