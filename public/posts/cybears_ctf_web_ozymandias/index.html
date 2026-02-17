@@ -11,7 +11,7 @@
 Event: Cybears CTF
 Category: Web
 Difficulty: Medium
-Source Code: https://github.com/F0DH1L/cybears_ctf_2k25/ozymandias
+Source Code: https://github.com/F0DH1L/cybears_ctf_2k25/tree/main/ozymandias
 I created this challenge for Cybears CTF, a Capture The Flag competition focused on the Africa region. The event brought together many talented teams from across the continent, making it an exciting competition with high-quality participation.
 A Flask web application that requires exploiting a cache poisoning vulnerability combined with a race condition to obtain the premium flag without paying for it.">
   <meta property="og:locale" content="en">
@@ -30,7 +30,7 @@ A Flask web application that requires exploiting a cache poisoning vulnerability
 Event: Cybears CTF
 Category: Web
 Difficulty: Medium
-Source Code: https://github.com/F0DH1L/cybears_ctf_2k25/ozymandias
+Source Code: https://github.com/F0DH1L/cybears_ctf_2k25/tree/main/ozymandias
 I created this challenge for Cybears CTF, a Capture The Flag competition focused on the Africa region. The event brought together many talented teams from across the continent, making it an exciting competition with high-quality participation.
 A Flask web application that requires exploiting a cache poisoning vulnerability combined with a race condition to obtain the premium flag without paying for it.">
 <meta name="application-name" content="My Personal Blog">
@@ -48,7 +48,7 @@ A Flask web application that requires exploiting a cache poisoning vulnerability
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "http:\/\/localhost:1313\/blog\/posts\/cybears_ctf_web_ozymandias\/"
-        },"genre": "posts","keywords": "ctf, web security, cybears_ctf, my_challenges","wordcount":  1670 ,
+        },"genre": "posts","keywords": "ctf, web security, cybears_ctf, my_challenges","wordcount":  1706 ,
         "url": "http:\/\/localhost:1313\/blog\/posts\/cybears_ctf_web_ozymandias\/","datePublished": "2025-12-27T18:57:06+01:00","dateModified": "2025-12-27T18:57:06+01:00","license": "2025 F0DH1L","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
@@ -101,8 +101,8 @@ A Flask web application that requires exploiting a cache poisoning vulnerability
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Cybears ctf web/ozymandias</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/blog/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>F0DH1L</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-12-27">2025-12-27</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1670 words&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;8 minutes&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-12-27">2025-12-27</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1706 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;9 minutes&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
                     <span>Contents</span>
@@ -141,7 +141,7 @@ A Flask web application that requires exploiting a cache poisoning vulnerability
 <strong>Event:</strong> Cybears CTF<br>
 <strong>Category:</strong> Web<br>
 <strong>Difficulty:</strong> Medium<br>
-<strong>Source Code:</strong> <a href="https://github.com/F0DH1L/cybears_ctf_2k25/ozymandias" target="_blank" rel="noopener noreffer ">https://github.com/F0DH1L/cybears_ctf_2k25/ozymandias</a></p>
+<strong>Source Code:</strong> <a href="https://github.com/F0DH1L/cybears_ctf_2k25/tree/main/ozymandias" target="_blank" rel="noopener noreffer ">https://github.com/F0DH1L/cybears_ctf_2k25/tree/main/ozymandias</a></p>
 <p>I created this challenge for Cybears CTF, a Capture The Flag competition focused on the Africa region. The event brought together many talented teams from across the continent, making it an exciting competition with high-quality participation.</p>
 <p>A Flask web application that requires exploiting a cache poisoning vulnerability combined with a race condition to obtain the premium flag without paying for it.</p>
 <hr>
@@ -325,6 +325,7 @@ CN-BEI: 200
 RU-MOW: 503
 ✓ Found blocked region: RU-MOW</code></pre></div>
 <p>Perfect! <code>RU-MOW</code> (Russia - Moscow) returns a 503 Service Unavailable response. Now we have everything we need for the cache poisoning attack!</p>
+<p><strong>NOTE:</strong> Some players felt this part was a bit guessy. Fair enough, everyone has different perspectives on what feels discoverable versus what feels like guesswork (so maybe it was guessy after all we will never know).</p>
 <p><strong>The Attack:</strong></p>
 <ol>
 <li>Send a request to <code>/static/js/locations.js?u=victim_username</code> with <code>X-Region: RU-MOW</code> (the blocked region we discovered)</li>
@@ -597,7 +598,7 @@ Response: 200, Balance: 30.0</code></pre></div>
 </article></div>
             </main><footer class="footer">
         <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.145.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/blog/" target="_blank">F0DH1L</a></span></div>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2025 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/blog/" target="_blank">F0DH1L</a></span></div>
         </div>
     </footer></div>
 

