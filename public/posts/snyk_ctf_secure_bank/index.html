@@ -7,8 +7,10 @@
         <title>Snyk CTF SecureBank - Chaining Cache Deception &amp; CSPT for Account Takeover - My Personal Blog</title><meta name="Description" content="This is my personal blog"><meta property="og:url" content="http://localhost:1313/blog/posts/snyk_ctf_secure_bank/">
   <meta property="og:site_name" content="My Personal Blog">
   <meta property="og:title" content="Snyk CTF SecureBank - Chaining Cache Deception & CSPT for Account Takeover">
-  <meta property="og:description" content="Introduction I had the honor of being a challenge author for Fetch The Flag CTF 2026, organized by Snyk and HackingHub. I designed a web challenge called SecureBank, which was solved 34 times out of more than 1000 players by the end of the competition.
-Want to try it yourself? You can run the challenge locally before reading further: github.com/F0DH1L/snyk_ctf_2k26_chall">
+  <meta property="og:description" content="Introduction I had the opportunity to be a challenge author for Fetch The Flag CTF 2026, organized by Snyk and HackingHub. I designed a web challenge called SecureBank, which was solved 34 times out of more than 1,000 players by the end of the competition.
+Want to try it yourself?
+Play it on HackingHub: app.hackinghub.io/hubs/snyk-ftf-26-secure-bank
+Or run it locally: github.com/F0DH1L/snyk_ctf_2k26_chall">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
@@ -20,13 +22,15 @@ Want to try it yourself? You can run the challenge locally before reading furthe
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Snyk CTF SecureBank - Chaining Cache Deception & CSPT for Account Takeover">
-  <meta name="twitter:description" content="Introduction I had the honor of being a challenge author for Fetch The Flag CTF 2026, organized by Snyk and HackingHub. I designed a web challenge called SecureBank, which was solved 34 times out of more than 1000 players by the end of the competition.
-Want to try it yourself? You can run the challenge locally before reading further: github.com/F0DH1L/snyk_ctf_2k26_chall">
+  <meta name="twitter:description" content="Introduction I had the opportunity to be a challenge author for Fetch The Flag CTF 2026, organized by Snyk and HackingHub. I designed a web challenge called SecureBank, which was solved 34 times out of more than 1,000 players by the end of the competition.
+Want to try it yourself?
+Play it on HackingHub: app.hackinghub.io/hubs/snyk-ftf-26-secure-bank
+Or run it locally: github.com/F0DH1L/snyk_ctf_2k26_chall">
 <meta name="application-name" content="My Personal Blog">
 <meta name="apple-mobile-web-app-title" content="My Personal Blog">
 <meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/blog/posts/snyk_ctf_secure_bank/" /><link rel="prev" href="http://localhost:1313/blog/posts/cybears_ctf_web_file_manager/" /><link rel="stylesheet" href="/blog/css/style.min.css"><link rel="preload" href="/blog/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/blog/posts/snyk_ctf_secure_bank/" /><link rel="prev" href="http://localhost:1313/blog/posts/cybears_ctf_web_file_manager/" /><link rel="next" href="http://localhost:1313/blog/posts/crtp_review/" /><link rel="stylesheet" href="/blog/css/style.min.css"><link rel="preload" href="/blog/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/blog/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/blog/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="/blog/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
     {
@@ -125,9 +129,11 @@ Want to try it yourself? You can run the challenge locally before reading furthe
   </ul>
 </nav></div>
             </div><div class="content" id="content"><h2 id="introduction">Introduction</h2>
-<p>I had the honor of being a challenge author for <strong>Fetch The Flag CTF 2026</strong>, organized by <strong>Snyk</strong> and <strong>HackingHub</strong>. I designed a web challenge called <strong>SecureBank</strong>, which was solved <strong>34 times</strong> out of more than 1000 players by the end of the competition.</p>
+<p>I had the opportunity to be a challenge author for <strong>Fetch The Flag CTF 2026</strong>, organized by <strong>Snyk</strong> and <strong>HackingHub</strong>. I designed a web challenge called <strong>SecureBank</strong>, which was solved <strong>34 times</strong> out of more than 1,000 players by the end of the competition.</p>
 <blockquote>
-<p><strong>Want to try it yourself?</strong> You can run the challenge locally before reading further: <a href="https://github.com/F0DH1L/snyk_ctf_2k26_chall" target="_blank" rel="noopener noreffer ">github.com/F0DH1L/snyk_ctf_2k26_chall</a></p></blockquote>
+<p><strong>Want to try it yourself?</strong><br>
+Play it on HackingHub: <a href="https://app.hackinghub.io/hubs/snyk-ftf-26-secure-bank" target="_blank" rel="noopener noreffer ">app.hackinghub.io/hubs/snyk-ftf-26-secure-bank</a><br>
+Or run it locally: <a href="https://github.com/F0DH1L/snyk_ctf_2k26_chall" target="_blank" rel="noopener noreffer ">github.com/F0DH1L/snyk_ctf_2k26_chall</a></p></blockquote>
 <p><img
         class="lazyload"
         src="/blog/svg/loading.min.svg"
@@ -468,7 +474,8 @@ X-Auth-Token: &lt;ADMIN_TOKEN&gt;</code></pre></div>
         </section>
     </div>
 
-    <div class="post-nav"><a href="/blog/posts/cybears_ctf_web_file_manager/" class="prev" rel="prev" title="Cybears ctf web/file manager"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Cybears ctf web/file manager</a></div>
+    <div class="post-nav"><a href="/blog/posts/cybears_ctf_web_file_manager/" class="prev" rel="prev" title="Cybears ctf web/file manager"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Cybears ctf web/file manager</a>
+            <a href="/blog/posts/crtp_review/" class="next" rel="next" title="My CRTP Experience: Preparation, Lab, and Exam Review">My CRTP Experience: Preparation, Lab, and Exam Review<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
 </article></div>
             </main><footer class="footer">

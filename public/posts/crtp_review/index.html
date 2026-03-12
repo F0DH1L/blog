@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head><script src="/blog/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=blog/livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>My CRTP Experience: Preparation, Lab, and Exam Review - My Personal Blog</title><meta name="Description" content="This is my personal blog"><meta property="og:url" content="http://localhost:1313/blog/posts/crtp_review/">
+  <meta property="og:site_name" content="My Personal Blog">
+  <meta property="og:title" content="My CRTP Experience: Preparation, Lab, and Exam Review">
+  <meta property="og:description" content="CRTP Certified I’m officially CRTP certified! I would like to express my gratitude to Nikhil Mittal and the Altered Security team for delivering this great certification and course. The exceptional support they provided throughout the entire journey was truly impressive. Here is the link: https://www.credential.net/9b36a171-479b-4885-b1c1-792528a07269#acc.ZcH7lUSE What Is CRTP?">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-03-10T15:58:49+01:00">
+    <meta property="article:modified_time" content="2026-03-10T15:58:49+01:00">
+    <meta property="article:tag" content="Certification">
+    <meta property="article:tag" content="Active Directory">
+    <meta property="article:tag" content="Red Team">
+    <meta property="article:tag" content="Crtp">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="My CRTP Experience: Preparation, Lab, and Exam Review">
+  <meta name="twitter:description" content="CRTP Certified I’m officially CRTP certified! I would like to express my gratitude to Nikhil Mittal and the Altered Security team for delivering this great certification and course. The exceptional support they provided throughout the entire journey was truly impressive. Here is the link: https://www.credential.net/9b36a171-479b-4885-b1c1-792528a07269#acc.ZcH7lUSE What Is CRTP?">
+<meta name="application-name" content="My Personal Blog">
+<meta name="apple-mobile-web-app-title" content="My Personal Blog">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/blog/posts/crtp_review/" /><link rel="prev" href="http://localhost:1313/blog/posts/snyk_ctf_secure_bank/" /><link rel="stylesheet" href="/blog/css/style.min.css"><link rel="preload" href="/blog/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/blog/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/blog/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/blog/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "My CRTP Experience: Preparation, Lab, and Exam Review",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/blog\/posts\/crtp_review\/"
+        },"genre": "posts","keywords": "certification, active directory, red team, crtp","wordcount":  1126 ,
+        "url": "http:\/\/localhost:1313\/blog\/posts\/crtp_review\/","datePublished": "2026-03-10T15:58:49+01:00","dateModified": "2026-03-10T15:58:49+01:00","license": "2025 F0DH1L","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "F0DH1L"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>
+          const query = window.matchMedia('(prefers-color-scheme: dark)');
+          function applyTheme() {
+            let theme = window.localStorage?.getItem('theme') || 'dark';
+            let isDark = theme === 'dark' || (theme === 'auto' && query.matches);
+            document.body.setAttribute('theme', isDark? 'dark' : 'light');
+            document.body.setAttribute('cfg-theme', theme);
+          }
+
+          applyTheme();
+          query.addEventListener('change', applyTheme);
+        </script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/blog/" title="My Personal Blog">F0DH1L Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/blog/posts/"> Posts </a><a class="menu-item" href="/blog/tags/"> Tags </a><a class="menu-item" href="/blog/about/"> About </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/blog/" title="My Personal Blog">F0DH1L Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/blog/posts/" title="">Posts</a><a class="menu-item" href="/blog/tags/" title="">Tags</a><a class="menu-item" href="/blog/about/" title="">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">My CRTP Experience: Preparation, Lab, and Exam Review</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/blog/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>F0DH1L</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2026-03-10">2026-03-10</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1126 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;6 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#crtp-certified">CRTP Certified</a>
+      <ul>
+        <li><a href="#im-officially-crtp-certified">I&rsquo;m officially CRTP certified!</a></li>
+      </ul>
+    </li>
+    <li><a href="#what-is-crtp">What Is CRTP?</a></li>
+    <li><a href="#background">Background</a></li>
+    <li><a href="#my-access-package">My Access Package</a></li>
+    <li><a href="#course-and-lab-overview">Course and Lab Overview</a></li>
+    <li><a href="#how-i-prepared">How I Prepared</a></li>
+    <li><a href="#lab-experience">Lab Experience</a></li>
+    <li><a href="#exam-experience-24-hours">Exam Experience (24 Hours)</a></li>
+    <li><a href="#reporting">Reporting</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#key-tips">Key Tips</a></li>
+    <li><a href="#final-thoughts">Final Thoughts</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="crtp-certified">CRTP Certified</h2>
+<h3 id="im-officially-crtp-certified">I&rsquo;m officially CRTP certified!</h3>
+<p><img
+        class="lazyload"
+        src="/blog/svg/loading.min.svg"
+        data-src="/blog/images/crtp_review/CRTP.png"
+        data-srcset="/blog/images/crtp_review/CRTP.png, /blog/images/crtp_review/CRTP.png 1.5x, /blog/images/crtp_review/CRTP.png 2x"
+        data-sizes="auto"
+        alt="/blog/images/crtp_review/CRTP.png"
+        title="certificate" /></p>
+<h4 id="i-would-like-to-express-my-gratitude-to-nikhil-mittal-and-the-altered-security-team-for-delivering-this-great-certification-and-course-the-exceptional-support-they-provided-throughout-the-entire-journey-was-truly-impressive-here-is-the-link">I would like to express my gratitude to Nikhil Mittal and the Altered Security team for delivering this great certification and course. The exceptional support they provided throughout the entire journey was truly impressive. Here is the link:</h4>
+<h4><a href="https://www.credential.net/9b36a171-479b-4885-b1c1-792528a07269#acc.ZcH7lUSE" target="_blank" rel="noopener noreffer ">https://www.credential.net/9b36a171-479b-4885-b1c1-792528a07269#acc.ZcH7lUSE</a></h4>
+<h2 id="what-is-crtp">What Is CRTP?</h2>
+<p><img
+        class="lazyload"
+        src="/blog/svg/loading.min.svg"
+        data-src="/blog/images/crtp_review/image-1.png"
+        data-srcset="/blog/images/crtp_review/image-1.png, /blog/images/crtp_review/image-1.png 1.5x, /blog/images/crtp_review/image-1.png 2x"
+        data-sizes="auto"
+        alt="/blog/images/crtp_review/image-1.png"
+        title="CRTP lab image" /></p>
+<p>CRTP (Certified Red Team Professional) is a hands-on certification from Altered Security <a href="https://www.alteredsecurity.com/adlab" target="_blank" rel="noopener noreffer ">https://www.alteredsecurity.com/adlab</a>, and it is beginner friendly for people getting into AD red teaming. The exam is 24 hours long in a patched enterprise-like AD environment with multiple domains and forests. The goal is to get OS level command execution on five target servers from the foothold machine.</p>
+<p>What I liked is that the course is not based on old CVEs. It focuses more on abusing AD features and common misconfigurations in a realistic way.</p>
+<h2 id="background">Background</h2>
+<p>I started learning Active Directory in summer 2025. At that time, I was following the HTB Penetration Tester path and also doing HTB AD labs. That gave me a decent base before CRTP, so I did not start from zero. The new thing for me was attacking from a Windows host, because I was already familiar with attacking from a Linux host.</p>
+<h2 id="my-access-package">My Access Package</h2>
+<p>I did not buy the access myself. My team and I won a CTF, and they gave the CRTP prize to me because I was the most interested in this path. The prize included 30 days of lab access, lifetime access to the course material, and one exam attempt. There are longer lab options too, but for me, 30 days was enough as long as I stayed consistent.</p>
+<p>This package usually costs $249, but there are other options:</p>
+<p><img
+        class="lazyload"
+        src="/blog/svg/loading.min.svg"
+        data-src="/blog/images/crtp_review/image.png"
+        data-srcset="/blog/images/crtp_review/image.png, /blog/images/crtp_review/image.png 1.5x, /blog/images/crtp_review/image.png 2x"
+        data-sizes="auto"
+        alt="/blog/images/crtp_review/image.png"
+        title="Other options available" /></p>
+<h2 id="course-and-lab-overview">Course and Lab Overview</h2>
+<p>The main course modules include:</p>
+<ul>
+<li>Active Directory enumeration</li>
+<li>Offensive PowerShell and .NET tradecraft</li>
+<li>Local privilege escalation</li>
+<li>Domain privilege escalation</li>
+<li>Domain Persistence and Dominance</li>
+<li>Cross trust attacks</li>
+<li>ADCS abuse</li>
+<li>Detection and bypass topics around MDE/MDI</li>
+</ul>
+<p>The lab has 23 learning objectives and around 40 flags. You also get videos, slides, lab manuals, and walkthroughs. There is a lot of content, and it can feel heavy at first, but it is very practical.</p>
+<h2 id="how-i-prepared">How I Prepared</h2>
+<p>My preparation was simple. I watched the videos carefully and wrote detailed notes, especially for commands and attack paths. Those notes saved me later.</p>
+<p>I started by viewing the course videos and taking notes. I was really motivated at the beginning, and it wasn’t too hard for me because I was familiar with some of the concepts. When I reached around 70%, I had to stop due to university exams.</p>
+<p>After the exams, I resumed and completed all the course videos with detailed notes.</p>
+<p>I wanted to start the lab, but first, I built a small home lab to practice some attack paths, especially to get familiar with the tools. As I mentioned, I had previous experience with AD attacks, but I had been performing the attacks from a Linux host. The CRTP focuses on executing attacks from a Windows host to better mimic a real red team scenario.</p>
+<p>After that, I started my lab access.</p>
+<h2 id="lab-experience">Lab Experience</h2>
+<p>Some objectives were straightforward, but others needed patience and clean notes.</p>
+<p>For a few of them, I rushed and checked hints from the walkthrough too early.</p>
+<p>When I got the lab access, I was fully free, so I pushed hard and finished most of it in two days, working more than 8 hours per day.</p>
+<p>After that, I went back to read the lab manual carefully to build a better methodology.</p>
+<p>Then I watched how the instructor solved some learning objectives. Videos helped me a lot because not everything is explained in detail in the lab manual.</p>
+<p><img
+        class="lazyload"
+        src="/blog/svg/loading.min.svg"
+        data-src="/blog/images/crtp_review/image-2.png"
+        data-srcset="/blog/images/crtp_review/image-2.png, /blog/images/crtp_review/image-2.png 1.5x, /blog/images/crtp_review/image-2.png 2x"
+        data-sizes="auto"
+        alt="/blog/images/crtp_review/image-2.png"
+        title="lab completion badge" /></p>
+<p>Here is the link to the achievement:</p>
+<p><a href="https://badges.parchment.eu/public/assertions/J8mc9AxmQ6CBRhlYf_LZyg" target="_blank" rel="noopener noreffer ">https://badges.parchment.eu/public/assertions/J8mc9AxmQ6CBRhlYf_LZyg</a></p>
+<h2 id="exam-experience-24-hours">Exam Experience (24 Hours)</h2>
+<p><img
+        class="lazyload"
+        src="/blog/svg/loading.min.svg"
+        data-src="/blog/images/crtp_review/spartians.gif"
+        data-srcset="/blog/images/crtp_review/spartians.gif, /blog/images/crtp_review/spartians.gif 1.5x, /blog/images/crtp_review/spartians.gif 2x"
+        data-sizes="auto"
+        alt="/blog/images/crtp_review/spartians.gif"
+        title="war starts" /></p>
+<p>I started at 10:30 AM. The beginning was rough because I wasted almost four hours on a privilege escalation path after missing a small detail. After fixing that, the pace became much better.</p>
+<p>Two targets felt easy, one was a bit tricky, and the rest were manageable. I got the final flag around 10:00 PM, then spent time organizing everything for the report.</p>
+<p>I slept around 12:30 AM, woke up at 6:00 AM, and focused only on documentation. I submitted around 10:45 AM, which was about 40 minutes before the end of the 24-hour exam period. The report can be submitted up to 48 hours after the exam ends, but since I had time, I decided to focus on writing and submitting it right away.</p>
+<h2 id="reporting">Reporting</h2>
+<p>While solving, I kept taking screenshots, which helped a lot when writing the report. I only had to retake 4 or 5 screenshots that I missed during the exam.</p>
+<p>Since it was my first certification report, I was definitely overthinking while writing it. My report ended up being 44 pages.</p>
+<p>Another thing that added pressure was the long cooldown for retakes (more than a month), so I really wanted to pass on the first attempt.</p>
+<p>I used this template for my report:</p>
+<p><a href="https://github.com/didntchooseaname/Altered-Security-Reporting" target="_blank" rel="noopener noreffer ">https://github.com/didntchooseaname/Altered-Security-Reporting</a></p>
+<p>There is no official template, fixed pattern, or required structure publicly recommended by the Altered Security team, so feel free to use any format you prefer.</p>
+<h2 id="results">Results</h2>
+<ul>
+<li><strong>Exam Start:</strong> Sunday, March 8, 2026 at 10:26 AM UTC</li>
+<li><strong>Exam End:</strong> Monday, March 9, 2026 at 11:26 AM UTC</li>
+<li><strong>Report Submission Deadline:</strong> Wednesday, March 11, 2026 at 10:26 AM UTC</li>
+<li><strong>Report Submitted:</strong> March 9, 2026 at 10:47 AM  within minutes, I received a confirmation that the report was received.</li>
+<li><strong>Result Email:</strong> March 10, 2026 at 1:04 PM  I received a mail saying I had passed.</li>
+<li><strong>Certification Email:</strong> March 12, 2026 at 10:01 AM  I received the certificate.</li>
+</ul>
+<h2 id="key-tips">Key Tips</h2>
+<ul>
+<li>Get proper rest before exam day so you are ready for the full 24 hours.</li>
+<li>Make sure your toolkit is ready before you start. Keep your tools and notes prepared so you do not waste time during the exam.</li>
+<li>If you get stuck after trying everything, reboot the VMs, take a short walk, and always redo your enumeration.</li>
+<li>Enumeration is key in the exam.</li>
+<li>Take the exam on a non-working day so you can focus fully on it.</li>
+<li>Take screenshots of every successful step. Writing short notes while solving is highly recommended  they will save you a lot of time when writing the report.</li>
+<li>For the report, there is no strict structure you must follow. Write it in your own style, but clearly explain the attack path, explain the commands you used, and include screenshots for each step.</li>
+</ul>
+<h2 id="final-thoughts">Final Thoughts</h2>
+<p>CRTP was a very good learning experience for me. I still think it is beginner friendly, but only if you are ready to practice seriously and take good notes.</p>
+<p>If you are starting Active Directory red teaming and want strong fundamentals, this certification is a solid choice.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2026-03-10</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="http://localhost:1313/blog/posts/crtp_review/" data-title="My CRTP Experience: Preparation, Lab, and Exam Review" data-via="Benhibafodhil" data-hashtags="certification,active directory,red team,crtp"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="http://localhost:1313/blog/posts/crtp_review/" data-title="My CRTP Experience: Preparation, Lab, and Exam Review"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="http://localhost:1313/blog/posts/crtp_review/" data-hashtag="certification"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/blog/posts/crtp_review/" data-title="My CRTP Experience: Preparation, Lab, and Exam Review"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="http://localhost:1313/blog/posts/crtp_review/" data-title="My CRTP Experience: Preparation, Lab, and Exam Review"><i data-svg-src="/blog/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="http://localhost:1313/blog/posts/crtp_review/" data-title="My CRTP Experience: Preparation, Lab, and Exam Review"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="http://localhost:1313/blog/posts/crtp_review/" data-title="My CRTP Experience: Preparation, Lab, and Exam Review" data-description=""><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=http%3a%2f%2flocalhost%3a1313%2fblog%2fposts%2fcrtp_review%2f&amp;text=My%20CRTP%20Experience%3a%20Preparation%2c%20Lab%2c%20and%20Exam%20Review" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/blog/tags/certification/">Certification</a>,&nbsp;<a href="/blog/tags/active-directory/">Active Directory</a>,&nbsp;<a href="/blog/tags/red-team/">Red Team</a>,&nbsp;<a href="/blog/tags/crtp/">Crtp</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/blog/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/blog/posts/snyk_ctf_secure_bank/" class="prev" rel="prev" title="Snyk CTF SecureBank - Chaining Cache Deception &amp; CSPT for Account Takeover"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Snyk CTF SecureBank - Chaining Cache Deception & CSPT for Account Takeover</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.145.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2025 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/blog/" target="_blank">F0DH1L</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/blog/css/custom.css"><script src="/blog/lib/lazysizes/lazysizes.min.js"></script><script src="/blog/lib/clipboard/clipboard.min.js"></script><script src="/blog/lib/sharer/sharer.min.js"></script><script>window.config={"comment":{}};</script><script src="/blog/js/theme.min.js"></script></body>
+</html>

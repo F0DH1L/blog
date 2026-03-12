@@ -4,7 +4,22 @@
         <link>http://localhost:1313/blog/tags/active-directory/</link>
         <description>Active Directory - Tag - My Personal Blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>benhibafodhil@gmail.com (F0DH1L)</managingEditor>
-            <webMaster>benhibafodhil@gmail.com (F0DH1L)</webMaster><copyright>2025 F0DH1L</copyright><lastBuildDate>Thu, 23 Oct 2025 14:01:34 &#43;0100</lastBuildDate><atom:link href="http://localhost:1313/blog/tags/active-directory/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>benhibafodhil@gmail.com (F0DH1L)</webMaster><copyright>2025 F0DH1L</copyright><lastBuildDate>Tue, 10 Mar 2026 15:58:49 &#43;0100</lastBuildDate><atom:link href="http://localhost:1313/blog/tags/active-directory/" rel="self" type="application/rss+xml" /><item>
+    <title>My CRTP Experience: Preparation, Lab, and Exam Review</title>
+    <link>http://localhost:1313/blog/posts/crtp_review/</link>
+    <pubDate>Tue, 10 Mar 2026 15:58:49 &#43;0100</pubDate>
+    <author>benhibafodhil@gmail.com (F0DH1L)</author>
+    <guid>http://localhost:1313/blog/posts/crtp_review/</guid>
+    <description><![CDATA[<h2 id="crtp-certified">CRTP Certified</h2>
+<h3 id="im-officially-crtp-certified">I&rsquo;m officially CRTP certified!</h3>
+<p></p>
+<p>I would like to express my gratitude to Nikhil Mittal and the Altered Security team for delivering this great certification and course. The exceptional support they provided throughout the entire journey was truly impressive.</p>
+<p>Here is the link:</p>
+<p><a href="https://www.credential.net/9b36a171-479b-4885-b1c1-792528a07269#acc.ZcH7lUSE" target="_blank" rel="noopener noreffer ">https://www.credential.net/9b36a171-479b-4885-b1c1-792528a07269#acc.ZcH7lUSE</a></p>
+<h2 id="what-is-crtp">What Is CRTP?</h2>
+<p></p>]]></description>
+</item>
+<item>
     <title>HTB Machine Writeup &#34;TombWatcher&#34;</title>
     <link>http://localhost:1313/blog/posts/htb_tombwatcher/</link>
     <pubDate>Thu, 23 Oct 2025 14:01:34 &#43;0100</pubDate>
